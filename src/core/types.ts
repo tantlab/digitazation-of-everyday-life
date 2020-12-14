@@ -13,19 +13,13 @@ export interface Fragment {
   docId: string;
   type: DataType;
   text: string;
-  similarFragments: SearchResult[];
-  notes?: Note[];
+  tags?: string[];
+  similarFragments?: FragmentLight[]; // It is optional, since they must be loaded when the user reaches them
 }
 
-export interface SearchResult {
+export interface FragmentLight {
   type: DataType;
   docId: string;
   fragmentId: string;
   text: string; // This can be just an abstract, or the full text
-}
-
-export interface Note {
-  id: string;
-  text: string;
-  author: string; // or not, not sure yet
 }
