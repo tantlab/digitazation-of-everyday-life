@@ -18,15 +18,20 @@ export function search({
   query,
   filters,
   size = 50,
+  offset = 0,
 }: {
   query: string;
   filters?: Record<string, Filter>;
   offset?: number;
   size?: number;
 }): Promise<{ total: number; results: FragmentLight[] }> {
+  const total = 150;
   return later({
-    total: size,
-    results: sampleSize(DATASET.fragments, size).map(lightenFragment),
+    total,
+    results: Object.values(DATASET.fragments)
+      .slice(0, total)
+      .slice(offset, size + offset)
+      .map(lightenFragment),
   });
 }
 

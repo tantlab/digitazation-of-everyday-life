@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useHistory, useLocation } from "react-router-dom";
 
 import { getFragmentURL, getSearchURL } from "../core/helpers";
 import { FragmentLight } from "../core/types";
@@ -8,7 +8,9 @@ import { search } from "../core/client";
 const SEARCH_QUERY_KEY = "q";
 const RESULTS_BATCH_SIZE = 50;
 
-const SearchForm: FC<{ initialQuery?: string }> = (props) => {
+const SearchForm: FC<{ initialQuery?: string; onSubmit: () => void }> = (
+  props
+) => {
   const history = useHistory();
   const [query, setQuery] = useState<string>(props.initialQuery || "");
 
@@ -18,9 +20,8 @@ const SearchForm: FC<{ initialQuery?: string }> = (props) => {
       id="search-form"
       onSubmit={(e) => {
         e.preventDefault();
-        if (query) {
-          history.push(getSearchURL(query));
-        }
+        props.onSubmit();
+        if (query) history.push(getSearchURL(query));
       }}
       onReset={() => {
         setQuery("");
@@ -44,23 +45,50 @@ const SearchForm: FC<{ initialQuery?: string }> = (props) => {
   );
 };
 
-const ResultsList: FC<{ results: FragmentLight[] }> = ({ results }) => (
-  <ul>
-    {results.map((result) => (
-      <li key={result.fragmentId}>
-        <h3>
-          <Link to={getFragmentURL(result)}>
-            Fragment n°{result.fragmentId}
-          </Link>
-        </h3>
-        <p>(from doc n°{result.docId})</p>
-        <p>Content: {result.text}</p>
-      </li>
-    ))}
-  </ul>
-);
+const ResultsList: FC<{
+  total: number;
+  results: FragmentLight[];
+  onReachBottom: () => void;
+}> = ({ results, total, onReachBottom }) => {
+  function checkScroll() {
+    const isNearBottom =
+      window.scrollY + window.innerHeight > document.body.offsetHeight - 500;
+
+    if (isNearBottom) onReachBottom();
+  }
+
+  // Check scroll on window scroll:
+  useEffect(() => {
+    window.addEventListener("scroll", checkScroll);
+    return function cleanup() {
+      window.removeEventListener("scroll", checkScroll);
+    };
+  });
+
+  return (
+    <>
+      <p>
+        {total} result{total > 1 ? "s" : ""}
+      </p>
+      <ul>
+        {results.map((result) => (
+          <li key={result.fragmentId}>
+            <h3>
+              <Link to={getFragmentURL(result)}>
+                Fragment n°{result.fragmentId}
+              </Link>
+            </h3>
+            <p>(from doc n°{result.docId})</p>
+            <p>Content: {result.text}</p>
+          </li>
+        ))}
+      </ul>
+    </>
+  );
+};
 
 const Search: FC = () => {
+  const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const query = queryParams.get(SEARCH_QUERY_KEY) as string;
 
@@ -68,26 +96,54 @@ const Search: FC = () => {
   const shouldSearch = !!query;
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [results, setResults] = useState<FragmentLight[] | null>(null);
+  const [searchResult, setSearchResult] = useState<{
+    total: number;
+    results: FragmentLight[];
+  } | null>(null);
 
   useEffect(() => {
     if (shouldSearch && !isLoading) {
       setIsLoading(true);
-      setResults(null);
+      setSearchResult(null);
 
-      search({ query, size: RESULTS_BATCH_SIZE }).then((value) =>
-        setResults(value.results)
-      );
+      search({ query, size: RESULTS_BATCH_SIZE }).then((value) => {
+        setIsLoading(false);
+        setSearchResult(value);
+      });
     }
-  });
+  }, [query, shouldSearch]);
 
   return (
     <div className="search-page">
-      <SearchForm initialQuery={query} />
+      <SearchForm initialQuery={query} onSubmit={() => setSearchResult(null)} />
 
       {shouldSearch && (
         <>
-          {results && <ResultsList results={results} />}
+          {searchResult && (
+            <ResultsList
+              total={searchResult.total}
+              results={searchResult.results}
+              onReachBottom={() => {
+                if (
+                  !isLoading &&
+                  searchResult.results.length < searchResult.total
+                ) {
+                  setIsLoading(true);
+                  search({
+                    query,
+                    size: RESULTS_BATCH_SIZE,
+                    offset: searchResult.results.length,
+                  }).then((value) => {
+                    setIsLoading(false);
+                    setSearchResult({
+                      total: searchResult.total,
+                      results: searchResult.results.concat(value.results),
+                    });
+                  });
+                }
+              }}
+            />
+          )}
           {isLoading && <div>Loading...</div>}
         </>
       )}
