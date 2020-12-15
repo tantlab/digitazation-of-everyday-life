@@ -1,5 +1,5 @@
 import faker from "faker";
-import { range, sample, sampleSize } from "lodash";
+import { range, sample, sampleSize, shuffle } from "lodash";
 
 import { DataType, Doc, Fragment, FragmentLight } from "./types";
 
@@ -16,6 +16,7 @@ export default function createFakeDataset(): {
   tags: string[];
   docs: Record<string, Doc>;
   fragments: Record<string, Fragment>;
+  fragmentsArray: Fragment[];
 } {
   const TAGS_COUNT = 15;
   const DOCS_COUNT = 100;
@@ -51,6 +52,7 @@ export default function createFakeDataset(): {
   return {
     tags,
     docs,
+    fragmentsArray: shuffle(fragments),
     fragments: fragments.reduce(
       (iter, fragment) => ({ ...iter, [fragment.id]: fragment }),
       {}

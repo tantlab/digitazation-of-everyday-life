@@ -28,7 +28,7 @@ export function search({
   const total = 150;
   return later({
     total,
-    results: Object.values(DATASET.fragments)
+    results: DATASET.fragmentsArray
       .slice(0, total)
       .slice(offset, size + offset)
       .map(lightenFragment),

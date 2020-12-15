@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useState } from "react";
 import { Link, useHistory, useLocation } from "react-router-dom";
 
-import { getFragmentURL, getSearchURL } from "../core/helpers";
+import { getURLFromFragmentLight, getSearchURL } from "../core/helpers";
 import { FragmentLight } from "../core/types";
 import { search } from "../core/client";
 
@@ -50,15 +50,15 @@ const ResultsList: FC<{
   results: FragmentLight[];
   onReachBottom: () => void;
 }> = ({ results, total, onReachBottom }) => {
-  function checkScroll() {
-    const isNearBottom =
-      window.scrollY + window.innerHeight > document.body.offsetHeight - 500;
-
-    if (isNearBottom) onReachBottom();
-  }
-
   // Check scroll on window scroll:
   useEffect(() => {
+    const checkScroll = () => {
+      if (
+        window.scrollY + window.innerHeight >
+        document.body.offsetHeight - 500
+      )
+        onReachBottom();
+    };
     window.addEventListener("scroll", checkScroll);
     return function cleanup() {
       window.removeEventListener("scroll", checkScroll);
@@ -74,7 +74,7 @@ const ResultsList: FC<{
         {results.map((result) => (
           <li key={result.fragmentId}>
             <h3>
-              <Link to={getFragmentURL(result)}>
+              <Link to={getURLFromFragmentLight(result)}>
                 Fragment n°{result.fragmentId}
               </Link>
             </h3>
@@ -102,7 +102,7 @@ const Search: FC = () => {
   } | null>(null);
 
   useEffect(() => {
-    if (shouldSearch && !isLoading) {
+    if (shouldSearch && !isLoading && !searchResult) {
       setIsLoading(true);
       setSearchResult(null);
 

@@ -1,3 +1,16 @@
 .doc-page {
-  color: blue;
+  .fragment:first-of-type {
+    padding-top: 50vh;
+  }
+  .fragment:last-of-type {
+    padding-bottom: 50vh;
+  }
+
+  .fragment {
+    color: grey;
+
+    &.active {
+      color: black;
+    }
+  }
 }
