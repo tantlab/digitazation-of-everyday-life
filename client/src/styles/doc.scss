@@ -1,16 +1,38 @@
 .doc-page {
-  .fragment:first-of-type {
-    padding-top: 50vh;
+  h1 {
+    margin-top: 40vh;
+    margin-bottom: 10vh;
+  }
+
+  // Try to contain highlighted fragment around screen center:
+  .doc-container {
+    width: 70vw;
   }
   .fragment:last-of-type {
-    padding-bottom: 50vh;
+    margin-bottom: 50vh;
   }
 
   .fragment {
+    position: relative;
     color: grey;
+    margin: 2em 0;
 
     &.active {
       color: black;
+    }
+
+    .fragment-data {
+      position: absolute;
+      left: 100%;
+      width: 28vw;
+      top: 50%;
+      transform: translateY(-50%);
+
+      .similar-fragment {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
     }
   }
 }

@@ -1,9 +1,10 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useCallback, useEffect, useState } from "react";
 import { Link, useHistory, useLocation } from "react-router-dom";
 
 import { getURLFromFragmentLight, getSearchURL } from "../core/helpers";
 import { FragmentLight } from "../core/types";
 import { search } from "../core/client";
+import Header from "./Header";
 
 const SEARCH_QUERY_KEY = "q";
 const RESULTS_BATCH_SIZE = 50;
@@ -51,19 +52,16 @@ const ResultsList: FC<{
   onReachBottom: () => void;
 }> = ({ results, total, onReachBottom }) => {
   // Check scroll on window scroll:
+  const checkScroll = useCallback(() => {
+    if (window.scrollY + window.innerHeight > document.body.offsetHeight - 500)
+      onReachBottom();
+  }, []);
   useEffect(() => {
-    const checkScroll = () => {
-      if (
-        window.scrollY + window.innerHeight >
-        document.body.offsetHeight - 500
-      )
-        onReachBottom();
-    };
     window.addEventListener("scroll", checkScroll);
     return function cleanup() {
       window.removeEventListener("scroll", checkScroll);
     };
-  });
+  }, []);
 
   return (
     <>
@@ -114,40 +112,46 @@ const Search: FC = () => {
   }, [query, shouldSearch]);
 
   return (
-    <div className="search-page">
-      <SearchForm initialQuery={query} onSubmit={() => setSearchResult(null)} />
+    <>
+      <Header />
+      <main className="search-page">
+        <SearchForm
+          initialQuery={query}
+          onSubmit={() => setSearchResult(null)}
+        />
 
-      {shouldSearch && (
-        <>
-          {searchResult && (
-            <ResultsList
-              total={searchResult.total}
-              results={searchResult.results}
-              onReachBottom={() => {
-                if (
-                  !isLoading &&
-                  searchResult.results.length < searchResult.total
-                ) {
-                  setIsLoading(true);
-                  search({
-                    query,
-                    size: RESULTS_BATCH_SIZE,
-                    offset: searchResult.results.length,
-                  }).then((value) => {
-                    setIsLoading(false);
-                    setSearchResult({
-                      total: searchResult.total,
-                      results: searchResult.results.concat(value.results),
+        {shouldSearch && (
+          <>
+            {searchResult && (
+              <ResultsList
+                total={searchResult.total}
+                results={searchResult.results}
+                onReachBottom={() => {
+                  if (
+                    !isLoading &&
+                    searchResult.results.length < searchResult.total
+                  ) {
+                    setIsLoading(true);
+                    search({
+                      query,
+                      size: RESULTS_BATCH_SIZE,
+                      offset: searchResult.results.length,
+                    }).then((value) => {
+                      setIsLoading(false);
+                      setSearchResult({
+                        total: searchResult.total,
+                        results: searchResult.results.concat(value.results),
+                      });
                     });
-                  });
-                }
-              }}
-            />
-          )}
-          {isLoading && <div>Loading...</div>}
-        </>
-      )}
-    </div>
+                  }
+                }}
+              />
+            )}
+            {isLoading && <div>Loading...</div>}
+          </>
+        )}
+      </main>
+    </>
   );
 };
 

@@ -13,8 +13,7 @@ export interface Fragment {
   docId: string;
   type: DataType;
   text: string;
-  tags?: string[];
-  similarFragments?: FragmentLight[]; // It is optional, since they must be loaded when the user reaches them
+  tags: string[];
 }
 
 export interface FragmentLight {
