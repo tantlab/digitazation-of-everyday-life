@@ -5,6 +5,7 @@ import { getURLFromFragmentLight, getSearchURL } from "../core/helpers";
 import { FragmentLight } from "../core/types";
 import { search } from "../core/client";
 import Header from "./Header";
+import TypeLabel from "./TypeLabel";
 
 const SEARCH_QUERY_KEY = "q";
 const RESULTS_BATCH_SIZE = 50;
@@ -68,16 +69,29 @@ const ResultsList: FC<{
       <p>
         {total} result{total > 1 ? "s" : ""}
       </p>
-      <ul>
+      <ul className="unstyled results-list">
         {results.map((result) => (
           <li key={result.fragmentId}>
             <h3>
               <Link to={getURLFromFragmentLight(result)}>
-                Fragment n°{result.fragmentId}
+                <i className="fas fa-link" /> Fragment n°{result.fragmentId}
               </Link>
             </h3>
-            <p>(from doc n°{result.docId})</p>
-            <p>Content: {result.text}</p>
+            <p>
+              <TypeLabel type={result.type} /> | Doc {result.docId}
+            </p>
+            {result.tags.length ? (
+              <p>
+                {result.tags.map((tag, i) => (
+                  <span className="tag" key={i}>
+                    {tag}
+                  </span>
+                ))}
+              </p>
+            ) : (
+              <p>No tag</p>
+            )}
+            <p className="content">{result.text}</p>
           </li>
         ))}
       </ul>
@@ -114,7 +128,9 @@ const Search: FC = () => {
   return (
     <>
       <Header />
-      <main className="search-page">
+      <main className="container search-page">
+        <h1>Everyday Life</h1>
+
         <SearchForm
           initialQuery={query}
           onSubmit={() => setSearchResult(null)}
@@ -122,6 +138,8 @@ const Search: FC = () => {
 
         {shouldSearch && (
           <>
+            <hr />
+
             {searchResult && (
               <ResultsList
                 total={searchResult.total}

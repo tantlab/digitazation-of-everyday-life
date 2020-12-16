@@ -1,13 +1,119 @@
-body {
+/* TYPOGRAPHY */
+$mainFont: "Helvetica", sans-serif;
+$contentsFont: "Merriweather", serif;
+
+/* MAIN VARIABLES */
+$mainOrange: #f85818;
+$secondaryRed: #7c2c0c;
+$radius: 0.2em;
+$borderColor: #999;
+$transitionDuration: 0.4s;
+
+/* USEFUL CLASSES */
+.typo-title {
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  font-weight: 400;
+}
+.typo-content {
+  font-family: $contentsFont;
+  font-weight: 300;
+  font-style: italic;
+}
+.inline-flex {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.label {
+  color: white;
+  display: inline-block;
+  border-radius: $radius;
+  line-height: 1em;
+  padding: 0.4em 0.8em;
+}
+.tag {
+  @extend .label;
+
+  font-size: 0.8em;
+  background: white;
+  border: 1px solid $mainOrange;
+  color: $mainOrange;
+
+  margin: 0.2em 0.2em;
+}
+button.unstyled {
+  padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  background: none;
+  color: inherit;
+}
+ul.unstyled {
+  list-style: none;
+  padding-left: 0;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+/* ACTUAL BASE STYLES */
+body {
+  margin: 0;
+  font-family: $mainFont;
+
+  &.no-scroll {
+    overflow-y: hidden;
+  }
+}
+.container,
+.container-large {
+  padding: 0 10px;
+  margin: auto;
+}
+.container {
+  max-width: 1200px;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  @extend .typo-title;
+}
+a {
+  color: black;
+  text-decoration: none;
+  box-shadow: inset 0 -1px $mainOrange;
+
+  &:hover {
+    color: $mainOrange;
+  }
+
+  & > i {
+    color: $mainOrange;
+  }
+}
+button {
+  border-radius: $radius;
+  background: $mainOrange;
+  color: white;
+  border: none;
+  outline: none;
+  cursor: pointer;
+
+  @extend .label;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+input {
+  border-radius: $radius;
+  border: 1px solid $borderColor;
+  box-sizing: content-box;
+
+  line-height: 1em;
+  padding: 0.5em 1em;
+}
+hr {
+  border: none;
+  border-bottom: 1px solid $borderColor;
 }

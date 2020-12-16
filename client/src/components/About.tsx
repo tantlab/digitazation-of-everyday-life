@@ -4,7 +4,7 @@ import Header from "./Header";
 const About: FC = () => (
   <>
     <Header />
-    <main className="about-page">
+    <main className="container about-page">
       <h1>About this project</h1>
 
       <p>

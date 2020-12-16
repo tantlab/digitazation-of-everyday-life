@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@babel/eslint-parser": "^7.12.1",
+    "@fortawesome/fontawesome-free": "^5.15.1",
     "@testing-library/jest-dom": "^5.11.6",
     "@testing-library/react": "^11.2.2",
     "@testing-library/user-event": "^12.6.0",

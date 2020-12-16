@@ -1,13 +1,16 @@
 .doc-page {
+  $border: 2px solid $mainOrange;
+
+  overflow-x: hidden;
+
   h1 {
-    margin-top: 40vh;
+    margin-top: 35vh;
     margin-bottom: 10vh;
   }
-
-  // Try to contain highlighted fragment around screen center:
-  .doc-container {
-    width: 70vw;
+  .content {
+    @extend .typo-content;
   }
+
   .fragment:last-of-type {
     margin-bottom: 50vh;
   }
@@ -15,18 +18,61 @@
   .fragment {
     position: relative;
     color: grey;
-    margin: 2em 0;
+    margin: 5em 0;
 
     &.active {
       color: black;
     }
+  }
 
-    .fragment-data {
-      position: absolute;
-      left: 100%;
-      width: 28vw;
-      top: 50%;
-      transform: translateY(-50%);
+  .side-panel {
+    position: absolute;
+    top: 50%;
+
+    .wrapper-1 {
+      z-index: 1;
+      position: fixed;
+      top: 0;
+      width: 100vw;
+      height: 100vh;
+      box-sizing: border-box;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .wrapper-2 {
+      max-height: 100%;
+      overflow-y: auto;
+    }
+  }
+
+  /**
+   * For large enough screens, show side-panel as an actual side panel, with a
+   * small arrow to emphasize which fragment is concerned:
+   */
+  @media (min-width: 800px) {
+    $dataWidth: 45vw;
+
+    .doc-container {
+      margin-right: $dataWidth;
+    }
+    .side-panel {
+      width: $dataWidth;
+      left: 100vw - $dataWidth;
+
+      .wrapper-1 {
+        width: $dataWidth;
+        margin-right: 2em;
+        border-left: $border;
+        top: 10vh;
+        height: 80vh;
+      }
+
+      .wrapper-2 {
+        padding: 0 30px 0 20px;
+      }
 
       .similar-fragment {
         overflow: hidden;
@@ -34,16 +80,105 @@
         white-space: nowrap;
       }
     }
+    .side-panel {
+      // Tilted triangle:
+      &::after {
+        content: " ";
+        position: absolute;
+        z-index: 2;
+        left: 0;
+        top: 50%;
+        margin-left: -0.5em;
 
-    .tags {
-      & > span {
-        color: white;
-        background: black;
+        margin-top: -0.5em;
 
-        display: inline-block;
-        margin: 0.2em;
-        padding: 0.2em;
-        border-radius: 0.2em;
+        width: 1em;
+        height: 1em;
+        border-top: $border;
+        border-left: $border;
+        background: white;
+        transform: rotate(-45deg);
+      }
+    }
+
+    button[data-action="deploy"],
+    button[data-action="collapse"] {
+      display: none;
+    }
+  }
+  @media (min-width: 1200px) {
+    $dataWidth: 40vw;
+
+    .doc-container {
+      margin-right: $dataWidth;
+    }
+    .side-panel {
+      width: $dataWidth;
+      left: 100vw - $dataWidth;
+
+      .wrapper-1 {
+        width: $dataWidth;
+      }
+    }
+  }
+
+  /**
+   * For smaller screens, show side-panel as a collapsible overlay:
+   */
+  @media (max-width: 800px) {
+    .doc-container {
+      /**
+       * When the overlay appear, the body's vertical scrollbar goes away. This
+       * line forces .doc-container width to remain the same, since 100vw does
+       * not depend on the presence of this scrollbar, weirdly.
+       */
+      width: calc(100vw - 30px);
+    }
+
+    .side-panel {
+      left: calc(100% + 20px);
+      transition: left $transitionDuration;
+
+      .wrapper-1 {
+        width: 100vw;
+        padding: 0 10px;
+        background: white;
+      }
+
+      .similar-fragment {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      &.deployed {
+        left: -10px;
+      }
+    }
+
+    button[data-action="deploy"] {
+      display: none;
+    }
+    .fragment.active button[data-action="deploy"] {
+      display: block;
+      position: absolute;
+      top: 100%;
+      color: $mainOrange;
+      margin: 1em 0;
+    }
+
+    button[data-action="collapse"] {
+      position: absolute;
+      right: 20px;
+      top: 10px;
+      width: 3em;
+      height: 3em;
+      border-radius: 3em;
+      background: $mainOrange;
+      color: white;
+
+      &:hover {
+        text-decoration: underline;
       }
     }
   }

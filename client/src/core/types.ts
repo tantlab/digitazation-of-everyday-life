@@ -1,6 +1,8 @@
+import config from "../config";
+
 export type Filter = unknown; // TODO
 
-export type DataType = "interview" | "observation" | "diary";
+export type DataType = keyof typeof config.dataTypes;
 
 export interface Doc {
   id: string;
@@ -20,5 +22,6 @@ export interface FragmentLight {
   type: DataType;
   docId: string;
   fragmentId: string;
+  tags: string[];
   text: string; // This can be just an abstract, or the full text
 }

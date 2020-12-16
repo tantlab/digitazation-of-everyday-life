@@ -27,6 +27,7 @@ const Fragment: FC<{
   updateFragment: (fragment: FragmentType) => void;
 }> = ({ fragment, isActive, updateFragment }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [showSidePanel, setShowSidePanel] = useState<boolean>(false);
   const [similarFragments, setSimilarFragments] = useState<
     FragmentLight[] | null
   >(null);
@@ -44,6 +45,19 @@ const Fragment: FC<{
     }
   }, [similarFragments, isLoading, isActive]);
 
+  // On small screen, prevent body scroll while the side panel is deployed:
+  useEffect(() => {
+    if (showSidePanel) document.body.classList.add("no-scroll");
+    else document.body.classList.remove("no-scroll");
+
+    return () => document.body.classList.remove("no-scroll");
+  }, [showSidePanel]);
+
+  // When fragment becomes inactive, hide its side panel:
+  useEffect(() => {
+    if (!isActive && showSidePanel) setShowSidePanel(false);
+  }, [isActive, showSidePanel]);
+
   // Deal with tags:
   const [isSettingTags, setIsSettingTags] = useState<boolean>(false);
   const setTags = useCallback((tags) => {
@@ -60,58 +74,81 @@ const Fragment: FC<{
 
   return (
     <div className={cx("fragment", isActive && "active")} data-id={fragment.id}>
-      <p>{fragment.text}</p>
+      <p className="content">{fragment.text}</p>
+
+      <button
+        className="unstyled"
+        data-action="deploy"
+        onClick={() => setShowSidePanel(true)}
+      >
+        <i className="fas fa-arrow-right" /> See similar fragments
+      </button>
 
       {isActive && (
-        <div className="fragment-data">
-          {fragment.tags && (
-            <>
-              {fragment.tags.length ? (
-                <p className="tags">
-                  {fragment.tags.map((tag, i) => (
-                    <span key={i}>
-                      {tag}{" "}
-                      <button
-                        onClick={() =>
-                          setTags(fragment.tags.filter((s) => s !== tag))
-                        }
-                      >
-                        X
-                      </button>
-                    </span>
-                  ))}
-                </p>
-              ) : (
-                <p>No tag</p>
+        <div className={cx("side-panel", showSidePanel && "deployed")}>
+          <div className="wrapper-1">
+            <button
+              className="unstyled"
+              data-action="collapse"
+              onClick={() => setShowSidePanel(false)}
+            >
+              <i className="fas fa-times" />
+            </button>
+            <div className="wrapper-2">
+              {fragment.tags && (
+                <>
+                  {fragment.tags.length ? (
+                    <p>
+                      {fragment.tags.map((tag, i) => (
+                        <span key={i} className="tag">
+                          {tag}{" "}
+                          <button
+                            className="unstyled"
+                            onClick={() =>
+                              setTags(fragment.tags.filter((s) => s !== tag))
+                            }
+                          >
+                            <i className="fas fa-times" />
+                          </button>
+                        </span>
+                      ))}
+                    </p>
+                  ) : (
+                    <p>No tag</p>
+                  )}
+                  <p>
+                    <input type="text" ref={input} />{" "}
+                    <button
+                      onClick={() => {
+                        if (input.current && input.current.value)
+                          setTags([...fragment.tags, input.current.value]);
+                      }}
+                    >
+                      Add tag
+                    </button>
+                  </p>
+                </>
               )}
-              <p>
-                <input type="text" ref={input} />{" "}
-                <button
-                  onClick={() => {
-                    if (input.current && input.current.value)
-                      setTags([...fragment.tags, input.current.value]);
-                  }}
-                >
-                  Add tag
-                </button>
-              </p>
-            </>
-          )}
-          {similarFragments && (
-            <div>
-              {similarFragments.length ? (
-                similarFragments.map((neighbor) => (
-                  <li key={neighbor.fragmentId} className="similar-fragment">
-                    <Link to={getURLFromFragmentLight(neighbor)}>
-                      {neighbor.text}
-                    </Link>
-                  </li>
-                ))
-              ) : (
-                <p>No similar fragment has been found.</p>
+              {similarFragments && (
+                <ul className="unstyled">
+                  {similarFragments.length ? (
+                    similarFragments.map((neighbor) => (
+                      <li
+                        key={neighbor.fragmentId}
+                        className="similar-fragment"
+                      >
+                        <Link to={getURLFromFragmentLight(neighbor)}>
+                          {neighbor.text}
+                        </Link>
+                      </li>
+                    ))
+                  ) : (
+                    <p>No similar fragment has been found.</p>
+                  )}
+                </ul>
               )}
             </div>
-          )}
+          </div>
         </div>
       )}
     </div>
@@ -215,11 +252,13 @@ const Doc: FC = () => {
 
   return (
     <>
-      <Header />
-      <main className="doc-page">
+      <Header large />
+      <main className="container-large doc-page">
         {doc && (
           <div className="doc-container">
-            <h1>Doc n°{doc.id}</h1>
+            <h1>
+              <span className="highlight">Doc n°{doc.id}</span>
+            </h1>
             <div ref={fragmentsContainer}>
               {doc.fragments.map((fragment) => (
                 <Fragment

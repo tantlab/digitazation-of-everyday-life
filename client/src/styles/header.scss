@@ -1,0 +1,22 @@
+header {
+  position: static;
+  z-index: 3;
+
+  background: $mainOrange;
+  padding: 1em 0;
+
+  .container,
+  .container-large {
+    @extend .inline-flex;
+  }
+
+  a {
+    color: white;
+    text-decoration: none;
+    @extend .typo-title;
+
+    &:hover {
+      color: $secondaryRed;
+    }
+  }
+}

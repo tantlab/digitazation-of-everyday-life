@@ -1,5 +1,5 @@
 import faker from "faker";
-import { range, sample, sampleSize, shuffle } from "lodash";
+import { random, range, sample, sampleSize, shuffle } from "lodash";
 
 import { DataType, Doc, Fragment, FragmentLight } from "./types";
 
@@ -9,6 +9,7 @@ export function lightenFragment(fragment: Fragment): FragmentLight {
     docId: fragment.docId,
     text: fragment.text,
     type: fragment.type,
+    tags: fragment.tags,
   };
 }
 
@@ -29,7 +30,7 @@ export default function createFakeDataset(): {
     docId: `d${Math.floor(Math.random() * DOCS_COUNT)}`,
     type: sample(["interview", "observation", "diary"]) as DataType,
     text: faker.lorem.paragraph(3),
-    tags: sampleSize(tags),
+    tags: sampleSize(tags, random(6)),
   }));
 
   const docs: Record<string, Doc> = fragments.reduce<Record<string, Doc>>(
