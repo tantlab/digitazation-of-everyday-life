@@ -22,12 +22,13 @@ export default function createFakeDataset(): {
   const TAGS_COUNT = 15;
   const DOCS_COUNT = 100;
   const FRAGMENTS_COUNT = 2000;
+  const DOC_IDS = range(DOCS_COUNT).map((i) => `d${i}`);
 
   const tags: string[] = range(TAGS_COUNT).map(() => faker.random.word());
 
   const fragments: Fragment[] = range(FRAGMENTS_COUNT).map((i) => ({
     id: `f${i}`,
-    docId: `d${Math.floor(Math.random() * DOCS_COUNT)}`,
+    docId: sample(DOC_IDS) as string,
     type: sample(["interview", "observation", "diary"]) as DataType,
     text: faker.lorem.paragraph(3),
     tags: sampleSize(tags, random(6)),
@@ -45,6 +46,17 @@ export default function createFakeDataset(): {
             id: fragment.docId,
             type: fragment.type,
             fragments: [fragment],
+            tags: sampleSize(tags, random(6)),
+            date: faker.date.recent(),
+            similarDocIDs: sampleSize(DOC_IDS, random(6)),
+            metadata: {
+              participant_i_o_me: faker.name.findName(),
+              age_i_me: random(15, 60) + "",
+              job_i_me: faker.name.jobTitle(),
+              residence_i_me: faker.address.city(),
+              analytic_note_i_o:
+                Math.random() > 0.5 ? faker.lorem.paragraph(1) : "",
+            },
           },
     }),
     {}

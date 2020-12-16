@@ -4,21 +4,25 @@
   overflow-x: hidden;
 
   h1 {
-    margin-top: 35vh;
-    margin-bottom: 10vh;
+    margin-top: 4em;
+    margin-bottom: 2em;
   }
   .content {
     @extend .typo-content;
   }
+  .tags {
+    position: relative;
+  }
 
   .fragment:last-of-type {
-    margin-bottom: 50vh;
+    margin-bottom: calc(50vh - 2em);
   }
 
   .fragment {
     position: relative;
     color: grey;
-    margin: 5em 0;
+    padding: 2em 0;
+    margin: 0;
 
     &.active {
       color: black;
@@ -162,9 +166,8 @@
     .fragment.active button[data-action="deploy"] {
       display: block;
       position: absolute;
-      top: 100%;
+      bottom: 1em;
       color: $mainOrange;
-      margin: 1em 0;
     }
 
     button[data-action="collapse"] {

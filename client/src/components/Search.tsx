@@ -17,33 +17,35 @@ const SearchForm: FC<{ initialQuery?: string; onSubmit: () => void }> = (
   const [query, setQuery] = useState<string>(props.initialQuery || "");
 
   return (
-    <form
-      action="/"
-      id="search-form"
-      onSubmit={(e) => {
-        e.preventDefault();
-        props.onSubmit();
-        if (query) history.push(getSearchURL(query));
-      }}
-      onReset={() => {
-        setQuery("");
-        history.push(getSearchURL());
-      }}
-    >
-      <input
-        name="q"
-        type="text"
-        value={query || ""}
-        onChange={(e) => setQuery(e.target.value)}
-        placeholder="Type here your query"
-      />
-      <button type="reset" title="Cancel">
-        Cancel
-      </button>
-      <button type="submit" title="Search" disabled={!query}>
-        Search
-      </button>
-    </form>
+    <>
+      <form
+        action="/"
+        id="search-form"
+        onSubmit={(e) => {
+          e.preventDefault();
+          props.onSubmit();
+          if (query) history.push(getSearchURL(query));
+        }}
+        onReset={() => {
+          setQuery("");
+          history.push(getSearchURL());
+        }}
+      >
+        <input
+          name="q"
+          type="text"
+          value={query || ""}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Type here your query"
+        />
+        <button type="reset" title="Cancel">
+          Cancel
+        </button>
+        <button type="submit" title="Search" disabled={!query}>
+          Search
+        </button>
+      </form>
+    </>
   );
 };
 

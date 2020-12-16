@@ -7,7 +7,11 @@ export type DataType = keyof typeof config.dataTypes;
 export interface Doc {
   id: string;
   type: DataType;
+  tags: string[];
   fragments: Fragment[];
+  date: Date;
+  metadata: { [field: string]: string };
+  similarDocIDs: string[];
 }
 
 export interface Fragment {

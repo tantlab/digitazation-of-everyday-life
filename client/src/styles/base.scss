@@ -20,6 +20,9 @@ $transitionDuration: 0.4s;
   font-weight: 300;
   font-style: italic;
 }
+.inline {
+  display: inline;
+}
 .inline-flex {
   display: flex;
   flex-direction: row;
@@ -42,6 +45,11 @@ $transitionDuration: 0.4s;
 
   margin: 0.2em 0.2em;
 }
+.no-tag {
+  color: $mainOrange;
+  font-style: italic;
+  font-size: 0.8em;
+}
 button.unstyled {
   padding: 0;
   margin: 0;
@@ -51,6 +59,10 @@ button.unstyled {
 ul.unstyled {
   list-style: none;
   padding-left: 0;
+
+  li {
+    margin: 0.5em 0;
+  }
 }
 
 /* ACTUAL BASE STYLES */
@@ -68,7 +80,7 @@ body {
   margin: auto;
 }
 .container {
-  max-width: 1200px;
+  max-width: 1000px;
 }
 h1,
 h2,
@@ -116,4 +128,16 @@ input {
 hr {
   border: none;
   border-bottom: 1px solid $borderColor;
+}
+.loader-overlay {
+  position: absolute;
+  background: #ffffffcc;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

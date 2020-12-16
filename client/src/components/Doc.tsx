@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useEffect, useRef, useState } from "react";
 import { Link, useHistory, useLocation, useParams } from "react-router-dom";
-import { intersection } from "lodash";
+import { intersection, toPairs } from "lodash";
 import { Location } from "history";
 import cx from "classnames";
 
@@ -16,6 +16,10 @@ import {
   getURLFromFragmentLight,
 } from "../core/helpers";
 import Header from "./Header";
+import config from "../config";
+import TypeLabel from "./TypeLabel";
+import TagsList from "./TagsList";
+import { Loader } from "./Loaders";
 
 function getFragmentID(location: Location): string | null {
   return location.hash.replace(/^#+/, "") || null;
@@ -26,24 +30,23 @@ const Fragment: FC<{
   isActive: boolean;
   updateFragment: (fragment: FragmentType) => void;
 }> = ({ fragment, isActive, updateFragment }) => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoadingSimilars, setIsLoadingSimilars] = useState<boolean>(false);
   const [showSidePanel, setShowSidePanel] = useState<boolean>(false);
   const [similarFragments, setSimilarFragments] = useState<
     FragmentLight[] | null
   >(null);
-  const input = useRef<HTMLInputElement>(null);
 
   // Load similar fragments when needed:
   useEffect(() => {
-    if (isActive && !similarFragments && !isLoading) {
-      setIsLoading(true);
+    if (isActive && !similarFragments && !isLoadingSimilars) {
+      setIsLoadingSimilars(true);
 
       getSimilarFragments(fragment.id).then((similarFragments) => {
         setSimilarFragments(similarFragments);
-        setIsLoading(false);
+        setIsLoadingSimilars(false);
       });
     }
-  }, [similarFragments, isLoading, isActive]);
+  }, [similarFragments, isLoadingSimilars, isActive]);
 
   // On small screen, prevent body scroll while the side panel is deployed:
   useEffect(() => {
@@ -81,7 +84,7 @@ const Fragment: FC<{
         data-action="deploy"
         onClick={() => setShowSidePanel(true)}
       >
-        <i className="fas fa-arrow-right" /> See similar fragments
+        <i className="fas fa-arrow-right" /> See tags and similar fragments
       </button>
 
       {isActive && (
@@ -97,55 +100,37 @@ const Fragment: FC<{
             <div className="wrapper-2">
               {fragment.tags && (
                 <>
-                  {fragment.tags.length ? (
-                    <p>
-                      {fragment.tags.map((tag, i) => (
-                        <span key={i} className="tag">
-                          {tag}{" "}
-                          <button
-                            className="unstyled"
-                            onClick={() =>
-                              setTags(fragment.tags.filter((s) => s !== tag))
-                            }
-                          >
-                            <i className="fas fa-times" />
-                          </button>
-                        </span>
-                      ))}
-                    </p>
-                  ) : (
-                    <p>No tag</p>
-                  )}
-                  <p>
-                    <input type="text" ref={input} />{" "}
-                    <button
-                      onClick={() => {
-                        if (input.current && input.current.value)
-                          setTags([...fragment.tags, input.current.value]);
-                      }}
-                    >
-                      Add tag
-                    </button>
-                  </p>
+                  <h4>Tags</h4>
+                  <TagsList
+                    tags={fragment.tags}
+                    isLoading={isSettingTags}
+                    updateTags={setTags}
+                  />
                 </>
               )}
               {similarFragments && (
-                <ul className="unstyled">
-                  {similarFragments.length ? (
-                    similarFragments.map((neighbor) => (
-                      <li
-                        key={neighbor.fragmentId}
-                        className="similar-fragment"
-                      >
-                        <Link to={getURLFromFragmentLight(neighbor)}>
-                          {neighbor.text}
-                        </Link>
-                      </li>
-                    ))
-                  ) : (
-                    <p>No similar fragment has been found.</p>
-                  )}
-                </ul>
+                <>
+                  <h4>Similar fragments</h4>
+                  <ul className="unstyled">
+                    {similarFragments.length ? (
+                      similarFragments.map((neighbor) => (
+                        <li
+                          key={neighbor.fragmentId}
+                          className="similar-fragment"
+                        >
+                          <Link to={getURLFromFragmentLight(neighbor)}>
+                            {neighbor.text}
+                          </Link>
+                        </li>
+                      ))
+                    ) : (
+                      <p>No similar fragment has been found.</p>
+                    )}
+                  </ul>
+                </>
+              )}
+              {isLoadingSimilars && (
+                <Loader message="Loading similar fragments" />
               )}
             </div>
           </div>
@@ -175,15 +160,11 @@ const Doc: FC = () => {
       setDoc(null);
 
       getDoc(docId).then((result) => {
-        // If fragment is invalid, redirect:
+        // If fragment is valid, scroll to it:
         if (
-          !highlightedFragmentId ||
-          !result.fragments.some(({ id }) => id === highlightedFragmentId)
+          highlightedFragmentId &&
+          result.fragments.some(({ id }) => id === highlightedFragmentId)
         ) {
-          history.replace(getURLFromFragment(result.fragments[0]));
-        }
-        // Else, scroll to the fragment:
-        else {
           frameId = requestAnimationFrame(() => {
             frameId = null;
             if (!fragmentsContainer || !fragmentsContainer.current) return;
@@ -241,6 +222,8 @@ const Doc: FC = () => {
       newHighlightedFragmentID !== highlightedFragmentId
     ) {
       history.replace(getFragmentURL(docId, newHighlightedFragmentID));
+    } else if (!newHighlightedFragmentID) {
+      history.replace(getFragmentURL(docId));
     }
   }, [fragmentsContainer, highlightedFragmentId, docId, history]);
   useEffect(() => {
@@ -257,8 +240,60 @@ const Doc: FC = () => {
         {doc && (
           <div className="doc-container">
             <h1>
-              <span className="highlight">Doc n°{doc.id}</span>
+              <span className="highlight">
+                <TypeLabel type={doc.type} /> | Doc {doc.id}
+              </span>
             </h1>
+
+            <div>
+              <h4 className="inline">Date</h4>{" "}
+              <span>
+                {doc.date.toLocaleDateString("en-US", {
+                  weekday: "long",
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </span>
+            </div>
+
+            {toPairs(doc.metadata)
+              .filter(([, value]) => value)
+              .map(([key, value]: [string, string]) => (
+                <div key={key}>
+                  <h4 className="inline">
+                    {config.docMetadataLabels[key] || key}
+                  </h4>{" "}
+                  <span>{value}</span>
+                </div>
+              ))}
+
+            <h4>Tags</h4>
+            <TagsList tags={doc.tags} />
+
+            {!!doc.similarDocIDs.length && (
+              <>
+                <h4>Related docs</h4>
+                <ul className="unstyled">
+                  {doc.similarDocIDs.map((docID) => (
+                    <li key={docID}>
+                      <Link to={getFragmentURL(docID)}>
+                        <i className="fas fa-link" /> Doc {docID}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+
+            <br />
+            <br />
+            <hr />
+            <br />
+            <br />
+
+            <h2>Fragments</h2>
+
             <div ref={fragmentsContainer}>
               {doc.fragments.map((fragment) => (
                 <Fragment
