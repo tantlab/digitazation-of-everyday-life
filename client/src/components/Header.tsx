@@ -6,6 +6,9 @@ const Header: FC = () => (
     <Link to="/">
       <strong>Everyday Life</strong>
     </Link>
+    <Link to="/about">
+      <strong>About this project</strong>
+    </Link>
   </header>
 );
 
