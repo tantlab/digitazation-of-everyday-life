@@ -34,5 +34,17 @@
         white-space: nowrap;
       }
     }
+
+    .tags {
+      & > span {
+        color: white;
+        background: black;
+
+        display: inline-block;
+        margin: 0.2em;
+        padding: 0.2em;
+        border-radius: 0.2em;
+      }
+    }
   }
 }

@@ -1,6 +1,6 @@
-import { sampleSize } from "lodash";
+import { cloneDeep, sampleSize } from "lodash";
 
-import { Doc, Filter, FragmentLight } from "./types";
+import { Doc, Filter, Fragment, FragmentLight } from "./types";
 import createFakeDataset, { lightenFragment } from "./createFakeDataset";
 
 /**
@@ -37,7 +37,7 @@ export function search({
 
 export function getDoc(docId: string): Promise<Doc> {
   return DATASET.docs[docId]
-    ? later(DATASET.docs[docId])
+    ? later(cloneDeep(DATASET.docs[docId]))
     : Promise.reject(new Error("Doc not found"));
 }
 
@@ -47,4 +47,15 @@ export function getSimilarFragments(
   return DATASET.fragments[fragmentId]
     ? later(sampleSize(DATASET.fragments, 10).map(lightenFragment))
     : Promise.reject(new Error("Fragment not found"));
+}
+
+export function setFragmentTags(
+  fragmentId: string,
+  tags: string[]
+): Promise<Fragment> {
+  if (!DATASET.fragments[fragmentId])
+    return Promise.reject(new Error("Fragment not found"));
+
+  DATASET.fragments[fragmentId].tags = tags;
+  return later(cloneDeep(DATASET.fragments[fragmentId]));
 }

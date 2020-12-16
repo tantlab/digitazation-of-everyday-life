@@ -1,5 +1,6 @@
 import React, { FC, useCallback, useEffect, useRef, useState } from "react";
 import { Link, useHistory, useLocation, useParams } from "react-router-dom";
+import { intersection } from "lodash";
 import { Location } from "history";
 import cx from "classnames";
 
@@ -8,7 +9,7 @@ import {
   Fragment as FragmentType,
   FragmentLight,
 } from "../core/types";
-import { getDoc, getSimilarFragments } from "../core/client";
+import { getDoc, getSimilarFragments, setFragmentTags } from "../core/client";
 import {
   getFragmentURL,
   getURLFromFragment,
@@ -20,14 +21,16 @@ function getFragmentID(location: Location): string | null {
   return location.hash.replace(/^#+/, "") || null;
 }
 
-const Fragment: FC<{ fragment: FragmentType; isActive: boolean }> = ({
-  fragment,
-  isActive,
-}) => {
+const Fragment: FC<{
+  fragment: FragmentType;
+  isActive: boolean;
+  updateFragment: (fragment: FragmentType) => void;
+}> = ({ fragment, isActive, updateFragment }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [similarFragments, setSimilarFragments] = useState<
     FragmentLight[] | null
   >(null);
+  const input = useRef<HTMLInputElement>(null);
 
   // Load similar fragments when needed:
   useEffect(() => {
@@ -41,18 +44,58 @@ const Fragment: FC<{ fragment: FragmentType; isActive: boolean }> = ({
     }
   }, [similarFragments, isLoading, isActive]);
 
+  // Deal with tags:
+  const [isSettingTags, setIsSettingTags] = useState<boolean>(false);
+  const setTags = useCallback((tags) => {
+    if (!isSettingTags) {
+      setIsSettingTags(true);
+      setFragmentTags(fragment.id, intersection(tags)).then(
+        (updatedFragment) => {
+          setIsSettingTags(false);
+          updateFragment(updatedFragment);
+        }
+      );
+    }
+  }, []);
+
   return (
     <div className={cx("fragment", isActive && "active")} data-id={fragment.id}>
       <p>{fragment.text}</p>
 
       {isActive && (
         <div className="fragment-data">
-          {fragment.tags && fragment.tags.length && (
-            <p>
-              {fragment.tags.map((tag, i) => (
-                <span key={i}>{tag}</span>
-              ))}
-            </p>
+          {fragment.tags && (
+            <>
+              {fragment.tags.length ? (
+                <p className="tags">
+                  {fragment.tags.map((tag, i) => (
+                    <span key={i}>
+                      {tag}{" "}
+                      <button
+                        onClick={() =>
+                          setTags(fragment.tags.filter((s) => s !== tag))
+                        }
+                      >
+                        X
+                      </button>
+                    </span>
+                  ))}
+                </p>
+              ) : (
+                <p>No tag</p>
+              )}
+              <p>
+                <input type="text" ref={input} />{" "}
+                <button
+                  onClick={() => {
+                    if (input.current && input.current.value)
+                      setTags([...fragment.tags, input.current.value]);
+                  }}
+                >
+                  Add tag
+                </button>
+              </p>
+            </>
           )}
           {similarFragments && (
             <div>
@@ -183,6 +226,16 @@ const Doc: FC = () => {
                   key={getURLFromFragment(fragment)}
                   fragment={fragment}
                   isActive={fragment.id === highlightedFragmentId}
+                  updateFragment={(updatedFragment) =>
+                    setDoc({
+                      ...doc,
+                      fragments: doc.fragments.map((fragment) =>
+                        fragment.id === updatedFragment.id
+                          ? updatedFragment
+                          : fragment
+                      ),
+                    })
+                  }
                 />
               ))}
             </div>
