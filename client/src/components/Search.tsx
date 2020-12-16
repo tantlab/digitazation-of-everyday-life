@@ -58,13 +58,13 @@ const ResultsList: FC<{
   const checkScroll = useCallback(() => {
     if (window.scrollY + window.innerHeight > document.body.offsetHeight - 500)
       onReachBottom();
-  }, []);
+  }, [onReachBottom]);
   useEffect(() => {
     window.addEventListener("scroll", checkScroll);
     return function cleanup() {
       window.removeEventListener("scroll", checkScroll);
     };
-  }, []);
+  }, [checkScroll]);
 
   return (
     <>
@@ -127,6 +127,31 @@ const Search: FC = () => {
     }
   }, [query, shouldSearch]);
 
+  const loadMoreResults = useCallback(
+    (
+      result: {
+        total: number;
+        results: FragmentLight[];
+      } | null
+    ) => {
+      if (!isLoading && result && result.results.length < result.total) {
+        setIsLoading(true);
+        search({
+          query,
+          size: RESULTS_BATCH_SIZE,
+          offset: result.results.length,
+        }).then((value) => {
+          setIsLoading(false);
+          setSearchResult({
+            total: result.total,
+            results: result.results.concat(value.results),
+          });
+        });
+      }
+    },
+    [shouldSearch, searchResult, isLoading]
+  );
+
   return (
     <>
       <Header />
@@ -146,25 +171,7 @@ const Search: FC = () => {
               <ResultsList
                 total={searchResult.total}
                 results={searchResult.results}
-                onReachBottom={() => {
-                  if (
-                    !isLoading &&
-                    searchResult.results.length < searchResult.total
-                  ) {
-                    setIsLoading(true);
-                    search({
-                      query,
-                      size: RESULTS_BATCH_SIZE,
-                      offset: searchResult.results.length,
-                    }).then((value) => {
-                      setIsLoading(false);
-                      setSearchResult({
-                        total: searchResult.total,
-                        results: searchResult.results.concat(value.results),
-                      });
-                    });
-                  }
-                }}
+                onReachBottom={() => loadMoreResults(searchResult)}
               />
             )}
             {isLoading && <div>Loading...</div>}
