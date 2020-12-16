@@ -6,6 +6,8 @@ import { FragmentLight } from "../core/types";
 import { search } from "../core/client";
 import Header from "./Header";
 import TypeLabel from "./TypeLabel";
+import TagsList from "./TagsList";
+import { Loader } from "./Loaders";
 
 const SEARCH_QUERY_KEY = "q";
 const RESULTS_BATCH_SIZE = 50;
@@ -76,23 +78,13 @@ const ResultsList: FC<{
           <li key={result.fragmentId}>
             <h3>
               <Link to={getURLFromFragmentLight(result)}>
-                <i className="fas fa-link" /> Fragment n°{result.fragmentId}
+                <i className="fas fa-link" /> Fragment {result.fragmentId}
               </Link>
             </h3>
-            <p>
+            <h5>
               <TypeLabel type={result.type} /> | Doc {result.docId}
-            </p>
-            {result.tags.length ? (
-              <p>
-                {result.tags.map((tag, i) => (
-                  <span className="tag" key={i}>
-                    {tag}
-                  </span>
-                ))}
-              </p>
-            ) : (
-              <p>No tag</p>
-            )}
+            </h5>
+            <TagsList tags={result.tags} />
             <p className="content">{result.text}</p>
           </li>
         ))}
@@ -174,7 +166,20 @@ const Search: FC = () => {
                 onReachBottom={() => loadMoreResults(searchResult)}
               />
             )}
-            {isLoading && <div>Loading...</div>}
+            {isLoading && (
+              <div className="center-flex">
+                <span>
+                  <br />
+                  <Loader
+                    message={
+                      searchResult
+                        ? "Searching for matching text fragments"
+                        : "Searching for more matching text fragments"
+                    }
+                  />
+                </span>
+              </div>
+            )}
           </>
         )}
       </main>

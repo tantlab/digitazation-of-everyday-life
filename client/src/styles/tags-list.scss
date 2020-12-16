@@ -1,0 +1,17 @@
+.tags {
+  .tag {
+    @extend .label;
+
+    font-size: 0.8em;
+    background: white;
+    border: 1px solid $mainOrange;
+    color: $mainOrange;
+
+    margin: 0.2em 0.2em;
+  }
+  .no-tag {
+    color: $mainOrange;
+    font-style: italic;
+    font-size: 0.8em;
+  }
+}

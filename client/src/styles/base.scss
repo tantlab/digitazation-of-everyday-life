@@ -40,21 +40,6 @@ $transitionDuration: 0.4s;
   line-height: 1em;
   padding: 0.4em 0.8em;
 }
-.tag {
-  @extend .label;
-
-  font-size: 0.8em;
-  background: white;
-  border: 1px solid $mainOrange;
-  color: $mainOrange;
-
-  margin: 0.2em 0.2em;
-}
-.no-tag {
-  color: $mainOrange;
-  font-style: italic;
-  font-size: 0.8em;
-}
 button.unstyled {
   padding: 0;
   margin: 0;
@@ -93,6 +78,7 @@ h3,
 h4,
 h5,
 h6 {
+  margin-top: 0;
   @extend .typo-title;
 }
 a {
