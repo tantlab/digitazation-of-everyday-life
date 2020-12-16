@@ -1,4 +1,4 @@
-import React, { FC, useRef } from "react";
+import React, { FC, useRef, useState } from "react";
 import { LoaderOverlay } from "./Loaders";
 
 const TagsList: FC<{
@@ -6,7 +6,7 @@ const TagsList: FC<{
   isLoading?: boolean;
   updateTags?: (tags: string[]) => void;
 }> = ({ tags, isLoading, updateTags }) => {
-  const input = useRef<HTMLInputElement>(null);
+  const [value, setValue] = useState<string>("");
 
   return (
     <div className="tags">
@@ -33,17 +33,21 @@ const TagsList: FC<{
         <p className="no-tag">No tag</p>
       )}
       {updateTags && (
-        <p>
-          <input type="text" ref={input} />{" "}
-          <button
-            onClick={() => {
-              if (input.current && input.current.value)
-                updateTags([...tags, input.current.value]);
-            }}
-          >
-            Add tag
+        <form
+          onSubmit={() => {
+            updateTags([...tags, ...value.split(",").map((s) => s.trim())]);
+          }}
+        >
+          <input
+            type="text"
+            value={value}
+            placeholder='Add tags separated with comas (example: "foo, bar")'
+            onChange={(e) => setValue(e.target.value)}
+          />{" "}
+          <button type="submit">
+            <i className="fas fa-plus" />
           </button>
-        </p>
+        </form>
       )}
 
       {isLoading && <LoaderOverlay message="Updating tags" />}

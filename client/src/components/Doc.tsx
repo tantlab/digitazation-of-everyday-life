@@ -19,7 +19,7 @@ import Header from "./Header";
 import config from "../config";
 import TypeLabel from "./TypeLabel";
 import TagsList from "./TagsList";
-import { Loader } from "./Loaders";
+import { Loader, LoaderOverlay } from "./Loaders";
 
 function getFragmentID(location: Location): string | null {
   return location.hash.replace(/^#+/, "") || null;
@@ -29,7 +29,8 @@ const Fragment: FC<{
   fragment: FragmentType;
   isActive: boolean;
   updateFragment: (fragment: FragmentType) => void;
-}> = ({ fragment, isActive, updateFragment }) => {
+  focusFragment: () => void;
+}> = ({ fragment, isActive, updateFragment, focusFragment }) => {
   const [isLoadingSimilars, setIsLoadingSimilars] = useState<boolean>(false);
   const [showSidePanel, setShowSidePanel] = useState<boolean>(false);
   const [similarFragments, setSimilarFragments] = useState<
@@ -77,7 +78,9 @@ const Fragment: FC<{
 
   return (
     <div className={cx("fragment", isActive && "active")} data-id={fragment.id}>
-      <p className="content">{fragment.text}</p>
+      <p className="content" onClick={focusFragment}>
+        {fragment.text}
+      </p>
 
       <button
         className="unstyled"
@@ -98,39 +101,41 @@ const Fragment: FC<{
               <i className="fas fa-times" />
             </button>
             <div className="wrapper-2">
-              {fragment.tags && (
-                <>
-                  <h4>Tags</h4>
-                  <TagsList
-                    tags={fragment.tags}
-                    isLoading={isSettingTags}
-                    updateTags={setTags}
-                  />
-                </>
-              )}
-              {similarFragments && (
-                <>
-                  <h4>Similar fragments</h4>
+              <h4>Tags</h4>
+              <TagsList
+                tags={fragment.tags}
+                isLoading={isSettingTags}
+                updateTags={setTags}
+              />
+              <br />
+              <hr />
+              <h4>Similar fragments</h4>
+              {similarFragments &&
+                (similarFragments.length ? (
                   <ul className="unstyled">
-                    {similarFragments.length ? (
-                      similarFragments.map((neighbor) => (
-                        <li
-                          key={neighbor.fragmentId}
-                          className="similar-fragment"
-                        >
-                          <Link to={getURLFromFragmentLight(neighbor)}>
-                            {neighbor.text}
-                          </Link>
-                        </li>
-                      ))
-                    ) : (
-                      <p>No similar fragment has been found.</p>
-                    )}
+                    {similarFragments.map((neighbor) => (
+                      <li
+                        key={neighbor.fragmentId}
+                        className="similar-fragment"
+                      >
+                        <Link to={getURLFromFragmentLight(neighbor)}>
+                          {neighbor.text}
+                        </Link>
+                      </li>
+                    ))}
                   </ul>
-                </>
-              )}
+                ) : (
+                  <p>No similar fragment has been found.</p>
+                ))}
               {isLoadingSimilars && (
-                <Loader message="Loading similar fragments" />
+                <>
+                  <div className="center-flex">
+                    <span>
+                      <Loader message="Loading similar fragments" />
+                    </span>
+                  </div>
+                  <br />
+                </>
               )}
             </div>
           </div>
@@ -151,6 +156,26 @@ const Doc: FC = () => {
 
   const fragmentsContainer = useRef<HTMLDivElement>(null);
 
+  const focusFragment = useCallback((fragmentId, smooth = false) => {
+    if (!fragmentsContainer || !fragmentsContainer.current) return;
+
+    const fragmentDOM = fragmentsContainer.current.querySelector(
+      `.fragment[data-id="${fragmentId}"]`
+    );
+
+    if (fragmentDOM) {
+      const boundingClientRect = fragmentDOM.getBoundingClientRect();
+      window.scroll({
+        top:
+          boundingClientRect.top +
+          fragmentDOM.clientHeight / 2 -
+          window.innerHeight / 2 +
+          window.scrollY,
+        behavior: smooth ? "smooth" : "auto",
+      });
+    }
+  }, []);
+
   // Load doc when needed:
   useEffect(() => {
     let frameId: number | null;
@@ -167,21 +192,7 @@ const Doc: FC = () => {
         ) {
           frameId = requestAnimationFrame(() => {
             frameId = null;
-            if (!fragmentsContainer || !fragmentsContainer.current) return;
-
-            const fragment = fragmentsContainer.current.querySelector(
-              `.fragment[data-id="${highlightedFragmentId}"]`
-            );
-
-            if (fragment) {
-              const boundingClientRect = fragment.getBoundingClientRect();
-              window.scroll({
-                top:
-                  boundingClientRect.top +
-                  fragment.clientHeight / 2 -
-                  window.innerHeight / 2,
-              });
-            }
+            focusFragment(highlightedFragmentId);
           });
         }
 
@@ -300,6 +311,7 @@ const Doc: FC = () => {
                   key={getURLFromFragment(fragment)}
                   fragment={fragment}
                   isActive={fragment.id === highlightedFragmentId}
+                  focusFragment={() => focusFragment(fragment.id, true)}
                   updateFragment={(updatedFragment) =>
                     setDoc({
                       ...doc,
@@ -315,6 +327,12 @@ const Doc: FC = () => {
             </div>
           </div>
         )}
+        {!highlightedFragmentId && (
+          <div className="side-panel-placeholder">
+            <span>(scroll down or click on a text fragment)</span>
+          </div>
+        )}
+        {isLoading && <LoaderOverlay message="Loading document" />}
       </main>
     </>
   );
