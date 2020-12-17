@@ -9,7 +9,7 @@ export function lightenFragment(fragment: Fragment): FragmentLight {
     docId: fragment.docId,
     text: fragment.text,
     type: fragment.type,
-    tags: fragment.tags,
+    machineTags: fragment.machineTags,
   };
 }
 
@@ -31,7 +31,13 @@ export default function createFakeDataset(): {
     docId: sample(DOC_IDS) as string,
     type: sample(["interview", "observation", "diary"]) as DataType,
     text: faker.lorem.paragraph(3),
-    tags: sampleSize(tags, random(6)),
+    userTags: sampleSize(tags, random(6)),
+    machineTags: sampleSize(tags, random(6)),
+    images: [
+      "https://picsum.photos/400/300.jpg",
+      "https://picsum.photos/400/500.jpg",
+      "https://picsum.photos/800/400.jpg",
+    ],
   }));
 
   const docs: Record<string, Doc> = fragments.reduce<Record<string, Doc>>(

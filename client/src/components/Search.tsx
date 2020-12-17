@@ -79,7 +79,7 @@ const ResultsList: FC<{
       <ul className="unstyled results-list">
         {results.map((result) => (
           <li key={result.fragmentId}>
-            <FragmentStandalone fragment={result} />
+            <FragmentStandalone fragment={result} showTags />
           </li>
         ))}
       </ul>

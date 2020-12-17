@@ -45,7 +45,7 @@ export function getSimilarFragments(
   fragmentId: string
 ): Promise<FragmentLight[]> {
   return DATASET.fragments[fragmentId]
-    ? later(sampleSize(DATASET.fragments, 10).map(lightenFragment))
+    ? later(sampleSize(DATASET.fragments, 3).map(lightenFragment))
     : Promise.reject(new Error("Fragment not found"));
 }
 
@@ -56,7 +56,7 @@ export function setFragmentTags(
   if (!DATASET.fragments[fragmentId])
     return Promise.reject(new Error("Fragment not found"));
 
-  DATASET.fragments[fragmentId].tags = tags;
+  DATASET.fragments[fragmentId].userTags = tags;
   return later(cloneDeep(DATASET.fragments[fragmentId]));
 }
 
@@ -66,13 +66,12 @@ export function autocomplete(
   count: number
 ): Promise<string[]> {
   const lQuery = query.toLowerCase();
-  const values = _(DATASET.docs)
-    .values()
+  const values = _(DATASET.fragmentsArray)
     .flatMap(
-      (doc) =>
-        (field === "type" || field === "tags"
-          ? doc[field]
-          : doc.metadata[field]) || []
+      (fragment) =>
+        (field === "type" || field === "userTags" || field === "machineTags"
+          ? fragment[field]
+          : []) || []
     )
     .filter((s) => s.toLowerCase().includes(lQuery))
     .intersection()

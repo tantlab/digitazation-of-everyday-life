@@ -5,7 +5,7 @@ const Header: FC<{ large?: boolean }> = ({ large }) => (
   <header>
     <div className={large ? "container-large" : "container"}>
       <Link to="/">
-        <strong>Everyday Life</strong>
+        <strong>Home</strong>
       </Link>
       <Link to="/about">
         <strong>About this project</strong>

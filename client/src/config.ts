@@ -51,8 +51,13 @@ export default {
       })),
     },
     {
-      label: "Tags",
-      field: "tags",
+      label: "User Tags",
+      field: "userTags",
+      type: "terms",
+    },
+    {
+      label: "Machine Tags",
+      field: "machineTags",
       type: "terms",
     },
   ] as FilterDef[],

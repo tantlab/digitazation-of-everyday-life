@@ -10,14 +10,17 @@ import { getFragmentURL, getURLFromFragmentLight } from "../core/helpers";
  * This component is used to display fragments both as search results and
  * similar fragments.
  */
-const Fragment: FC<{ fragment: FragmentLight }> = ({ fragment }) => (
+const Fragment: FC<{ fragment: FragmentLight; showTags?: boolean }> = ({
+  fragment,
+  showTags,
+}) => (
   <div className="fragment-standalone">
     <Link to={getURLFromFragmentLight(fragment)}>
       <p className="content">
         <i className="fas fa-link" /> {fragment.text}
       </p>
     </Link>
-    <TagsList tags={fragment.tags} />
+    {showTags && <TagsList tags={fragment.machineTags} />}
     <h5>
       From <Link to={getFragmentURL(fragment.docId)}>Doc {fragment.docId}</Link>{" "}
       | <TypeLabel type={fragment.type} />

@@ -1,11 +1,42 @@
 import React, { FC } from "react";
 import Header from "./Header";
 
+const PARTNERS = [
+  {
+    label: "Aalborg University",
+    img: "/img/logo-aau.png",
+    url: "https://www.en.aau.dk/",
+  },
+  {
+    label: "Center for Digital Welfare",
+    img: "/img/logo-cdw.png",
+    url: "https://en.itu.dk/research/center-for-digital-welfare",
+  },
+  {
+    label: "IT University of Copenhagen",
+    img: "/img/logo-itu.jpg",
+    url: "https://en.itu.dk/",
+  },
+  {
+    label: "The Techno-Anthropology Lab",
+    img: "/img/logo-tantlab.svg",
+    url: "https://www.tantlab.aau.dk/",
+  },
+];
+
 const About: FC = () => (
   <>
     <Header />
     <main className="container about-page">
-      <h1>About this project</h1>
+      <h2>About this project</h2>
+      <h1>The Digitization of Everyday Life During the Corona Crisis</h1>
+
+      <h4>
+        Download all tags here:{" "}
+        <a href="">
+          <i className="fas fa-download"></i> tags.csv
+        </a>
+      </h4>
 
       <p>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nec
@@ -42,29 +73,16 @@ const About: FC = () => (
         efficitur risus vitae finibus blandit. Aliquam nec lectus in dolor porta
         blandit. In tempus placerat varius.
       </p>
-      <p>
-        In sem velit, aliquet eu lectus eu, fringilla rutrum mauris. Cras dolor
-        elit, eleifend blandit ipsum vel, placerat porttitor urna. Suspendisse
-        auctor, nunc ac tincidunt sagittis, lacus ante convallis ante, sit amet
-        suscipit neque velit in erat. Duis nec nunc viverra, iaculis lacus a,
-        tincidunt odio. Proin in tristique libero. Etiam accumsan odio eget arcu
-        ullamcorper condimentum vel sit amet orci. Aliquam bibendum vestibulum
-        sodales. Aliquam dictum libero eget quam porta mattis. Praesent euismod
-        eget purus vitae ullamcorper. Donec finibus ut metus et sollicitudin.
-        Nunc tempor nec elit a iaculis. Duis mollis, felis non interdum feugiat,
-        purus ipsum volutpat augue, sit amet congue sapien nibh vel odio. Nunc
-        pharetra purus tincidunt diam viverra, ac ullamcorper urna tincidunt.
-        Mauris pellentesque, ex at hendrerit malesuada, enim nibh ultricies
-        lacus, quis consequat sem orci id lacus. Suspendisse pretium tortor ac
-        rutrum iaculis. Cras fermentum quis nisl ut semper.
-      </p>
-      <p>
-        Maecenas dictum sollicitudin nisi congue consequat. Aliquam erat
-        volutpat. Proin in elit id purus ultricies efficitur ac ut erat. Aliquam
-        sed ultricies dolor. Nam convallis nisl a mi hendrerit, eget tincidunt
-        justo volutpat. Mauris ac gravida arcu. Sed lacinia lacus sapien, eget
-        eleifend sem bibendum sed.
-      </p>
+
+      <div className="partners">
+        {PARTNERS.map(({ url, label, img }, i) => (
+          <div key={i}>
+            <a className="unstyled" href={url}>
+              <img src={img} alt={label} />
+            </a>
+          </div>
+        ))}
+      </div>
     </main>
   </>
 );

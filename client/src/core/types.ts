@@ -42,13 +42,15 @@ export interface Fragment {
   docId: string;
   type: DataType;
   text: string;
-  tags: string[];
+  userTags: string[];
+  machineTags: string[];
+  images?: string[];
 }
 
 export interface FragmentLight {
   type: DataType;
   docId: string;
   fragmentId: string;
-  tags: string[];
+  machineTags: string[];
   text: string; // This can be just an abstract, or the full text
 }

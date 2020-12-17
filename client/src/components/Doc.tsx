@@ -102,13 +102,19 @@ const Fragment: FC<{
         {fragment.text}
       </p>
 
-      <button
-        className="unstyled"
-        data-action="deploy"
-        onClick={() => setShowSidePanel(true)}
-      >
-        <i className="fas fa-arrow-right" /> See tags and similar fragments
-      </button>
+      <span className="fingerprint">
+        <i className="fas fa-arrow-right" /> document {fragment.docId} / segment{" "}
+        {fragment.id}
+        <div>
+          <button
+            className="unstyled"
+            data-action="deploy"
+            onClick={() => setShowSidePanel(true)}
+          >
+            <i className="fas fa-arrow-right" /> See tags and similar segments
+          </button>
+        </div>
+      </span>
 
       {isActive && (
         <div
@@ -124,15 +130,41 @@ const Fragment: FC<{
               <i className="fas fa-times" />
             </button>
             <div className="wrapper-2">
-              <h4>Tags</h4>
+              {fragment.images && !!fragment.images.length && (
+                <>
+                  <h4>Images</h4>
+                  <div className="images">
+                    {fragment.images.map((url) => (
+                      <div className="image">
+                        <img src={url} alt="" />
+                        <div className="caption">
+                          <a href={url} target="_blank">
+                            <i className="fas fa-link" /> {url.match(/[^/]*$/)}
+                          </a>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <br />
+                  <hr />
+                  <br />
+                </>
+              )}
+              <h4>user generated Tags</h4>
               <TagsList
-                tags={fragment.tags}
+                tags={fragment.userTags}
                 isLoading={isSettingTags}
                 updateTags={setTags}
               />
               <br />
               <hr />
-              <h4>Similar fragments</h4>
+              <br />
+              <h4>Machine generated Tags</h4>
+              <TagsList tags={fragment.machineTags} isLoading={isSettingTags} />
+              <br />
+              <hr />
+              <br />
+              <h4>Similar segments</h4>
               {similarFragments &&
                 (similarFragments.length ? (
                   <ul className="unstyled">
@@ -311,7 +343,7 @@ const Doc: FC = () => {
 
             {!!doc.similarDocIDs.length && (
               <>
-                <h4>Related docs</h4>
+                <h4>Docs from the same informant</h4>
                 <ul className="unstyled">
                   {doc.similarDocIDs.map((docID) => (
                     <li key={docID}>
