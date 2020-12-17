@@ -39,12 +39,15 @@ export interface Doc {
 
 export interface Fragment {
   id: string;
-  docId: string;
-  type: DataType;
   text: string;
+  images?: string[];
   userTags: string[];
   machineTags: string[];
-  images?: string[];
+
+  // Doc:
+  docId: string;
+  docType: DataType;
+  docMetadata: { [field: string]: string };
 }
 
 export interface FragmentLight {

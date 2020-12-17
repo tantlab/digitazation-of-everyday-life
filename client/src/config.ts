@@ -43,7 +43,7 @@ export default {
     },
     {
       label: "Doc type",
-      field: "type",
+      field: "docType",
       type: "terms",
       values: toPairs(dataTypes).map(([key, value]) => ({
         value: key,
@@ -58,6 +58,11 @@ export default {
     {
       label: "Machine Tags",
       field: "machineTags",
+      type: "terms",
+    },
+    {
+      label: "Informant job",
+      field: "job_i_me",
       type: "terms",
     },
   ] as FilterDef[],

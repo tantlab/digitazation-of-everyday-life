@@ -95,7 +95,6 @@ const Search: FC = () => {
   const query = getQueryFromURL(queryParams) || "";
   const filtersState = getFiltersStateFromURL(queryParams, config.filters);
 
-  // This flag is trivial now, but will take filters into account later:
   const shouldSearch = !!query;
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -158,13 +157,15 @@ const Search: FC = () => {
           }
         />
 
-        <Filters
-          state={filtersState}
-          defs={config.filters}
-          onSubmit={(newFiltersState: FiltersState) =>
-            history.push(getSearchURL(query, newFiltersState))
-          }
-        />
+        {shouldSearch && (
+          <Filters
+            state={filtersState}
+            defs={config.filters}
+            onSubmit={(newFiltersState: FiltersState) =>
+              history.push(getSearchURL(query, newFiltersState))
+            }
+          />
+        )}
 
         {shouldSearch && (
           <>

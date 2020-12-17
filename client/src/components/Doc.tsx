@@ -314,6 +314,7 @@ const Doc: FC = () => {
   return (
     <>
       <Header large />
+
       <main className="container-large doc-page">
         {doc && (
           <div className="doc-container">

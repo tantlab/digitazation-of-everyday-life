@@ -69,9 +69,9 @@ export function autocomplete(
   const values = _(DATASET.fragmentsArray)
     .flatMap(
       (fragment) =>
-        (field === "type" || field === "userTags" || field === "machineTags"
+        (field === "docType" || field === "userTags" || field === "machineTags"
           ? fragment[field]
-          : []) || []
+          : fragment.docMetadata[field]) || []
     )
     .filter((s) => s.toLowerCase().includes(lQuery))
     .intersection()
