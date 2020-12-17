@@ -1,0 +1,32 @@
+{          
+    "properties": {
+        "text_segment_id": {
+            "type": "keyword"
+        },
+        "document_id": {
+            "type": "keyword"
+        },
+        "text_question": {
+            "type": "text",
+            "analyzer": "rebuilt_danish",
+            "term_vector": "with_positions_offsets"
+        },
+        "text_answer": {
+            "type": "text",
+            "analyzer": "rebuilt_danish",
+            "term_vector": "with_positions_offsets"
+        },
+        "tfidf_tag": {
+            "type": "keyword"
+        },
+        "ner_tag": {
+            "type": "keyword"
+        },
+        "text_segment_similarity_id": {
+            "type": "keyword"
+        },
+        "order": {
+            "type": "short"
+        }
+    }
+}
