@@ -1,0 +1,12 @@
+version: "2"
+services:
+  # Elasticsearch service
+  elasticsearch:
+    image: elasticsearch:${ES_VERSION}
+    restart: ${RESTART_POLICY}
+    volumes:
+      - ${PROJECT_PATH}/docker/elasticsearch/data:/usr/share/elasticsearch/data
+      - ${PROJECT_PATH}/docker/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+    environment:
+      - "ES_JAVA_OPTS=-Xms1024m -Xmx1024m"
+      - "TAKE_FILE_OWNERSHIP=1"
