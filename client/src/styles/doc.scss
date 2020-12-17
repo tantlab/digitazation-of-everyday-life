@@ -194,10 +194,12 @@
 
     .side-panel-placeholder {
       position: fixed;
-      right: 0;
+      left: calc(#{100vw - $dataWidth});
       height: 80vh;
       top: 10vh;
       width: $dataWidth;
+      border-left: 1px solid $borderColor;
+      box-sizing: border-box;
     }
   }
   @media (min-width: 1200px) {
@@ -213,6 +215,9 @@
     .side-panel .wrapper-1,
     .side-panel-placeholder {
       width: $dataWidth;
+    }
+    .side-panel-placeholder {
+      left: calc(#{100vw - $dataWidth});
     }
   }
 

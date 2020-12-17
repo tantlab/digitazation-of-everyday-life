@@ -369,8 +369,6 @@ const Doc: FC = () => {
 
             <br />
             <br />
-            <hr />
-            <br />
             <br />
 
             <h2>Fragments</h2>
