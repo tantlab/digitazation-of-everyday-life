@@ -7,10 +7,6 @@
     padding-top: 30vh;
   }
 
-  .content {
-    @extend .typo-content;
-  }
-
   form#search-form {
     @extend .inline-flex;
 
@@ -20,10 +16,6 @@
     & > *:not(:last-child) {
       margin-right: 0.4em;
     }
-  }
-
-  .results-list > li {
-    margin-top: 4em;
   }
 
   .filters-panel {

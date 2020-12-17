@@ -8,6 +8,7 @@ $secondaryRed: #7c2c0c;
 $radius: 0.2em;
 $borderColor: #999;
 $transitionDuration: 0.4s;
+$containerPadding: 10px;
 
 /* USEFUL CLASSES */
 .typo-title {
@@ -66,7 +67,7 @@ body {
 }
 .container,
 .container-large {
-  padding: 0 10px;
+  padding: 0 $containerPadding;
   margin: auto;
 }
 .container {
@@ -132,4 +133,15 @@ hr {
   height: 100%;
 
   @extend .center-flex;
+}
+.fragment-standalone {
+  margin: 4em 0;
+
+  .content {
+    @extend .typo-content;
+
+    i {
+      color: $mainOrange;
+    }
+  }
 }

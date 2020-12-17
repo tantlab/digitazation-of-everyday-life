@@ -1,9 +1,8 @@
 import React, { FC, useCallback, useEffect, useState } from "react";
-import { Link, useHistory, useLocation } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import cx from "classnames";
 
 import {
-  getURLFromFragmentLight,
   getSearchURL,
   getQueryFromURL,
   getFiltersStateFromURL,
@@ -11,11 +10,10 @@ import {
 import { FiltersState, FragmentLight } from "../core/types";
 import { search } from "../core/client";
 import Header from "./Header";
-import TypeLabel from "./TypeLabel";
-import TagsList from "./TagsList";
 import { Loader } from "./Loaders";
 import config from "../config";
 import Filters from "./Filters";
+import FragmentStandalone from "./FragmentStandalone";
 
 const RESULTS_BATCH_SIZE = 50;
 
@@ -81,16 +79,7 @@ const ResultsList: FC<{
       <ul className="unstyled results-list">
         {results.map((result) => (
           <li key={result.fragmentId}>
-            <h3>
-              <Link to={getURLFromFragmentLight(result)}>
-                <i className="fas fa-link" /> Fragment {result.fragmentId}
-              </Link>
-            </h3>
-            <h5>
-              <TypeLabel type={result.type} /> | Doc {result.docId}
-            </h5>
-            <TagsList tags={result.tags} />
-            <p className="content">{result.text}</p>
+            <FragmentStandalone fragment={result} />
           </li>
         ))}
       </ul>

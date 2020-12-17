@@ -1,4 +1,4 @@
-import _, { cloneDeep, random, sampleSize } from "lodash";
+import _, { cloneDeep, sampleSize } from "lodash";
 
 import { Doc, FiltersState, Fragment, FragmentLight } from "./types";
 import createFakeDataset, { lightenFragment } from "./createFakeDataset";

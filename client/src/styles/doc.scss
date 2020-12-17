@@ -7,10 +7,6 @@
     margin-top: 4em;
     margin-bottom: 2em;
   }
-  .content {
-    @extend .typo-content;
-    cursor: pointer;
-  }
   .tags {
     position: relative;
 
@@ -37,6 +33,11 @@
     &.active {
       color: black;
     }
+
+    & > .content {
+      @extend .typo-content;
+      cursor: pointer;
+    }
   }
 
   .side-panel {
@@ -57,6 +58,7 @@
     }
 
     .wrapper-2 {
+      padding: 20px;
       max-height: 100%;
       overflow-y: auto;
     }
@@ -77,31 +79,26 @@
    */
   @media (min-width: 800px) {
     $dataWidth: 45vw;
+    $leftMargin: 20px;
 
     .doc-container {
-      margin-right: $dataWidth;
+      /**
+       * This is based on 100vw to not take into account the body vertical
+       * scrollbar width:
+       */
+      width: calc(
+        #{100vw - $dataWidth} - #{$leftMargin} - #{$containerPadding}
+      );
     }
     .side-panel {
-      left: 100%;
-      margin-left: 20px;
+      width: $dataWidth;
+      left: calc(100% + #{$leftMargin});
 
-      .similar-fragment {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+      .wrapper-1 {
+        width: $dataWidth;
+        border-left: $border;
       }
-    }
-    .wrapper-1 {
-      top: 10vh;
-      height: 80vh;
-      border-left: $border;
-    }
 
-    .wrapper-2 {
-      padding-left: 40px;
-      width: calc(#{$dataWidth} - 80px);
-    }
-    .side-panel {
       // Tilted triangle:
       &::after {
         content: " ";
@@ -137,16 +134,17 @@
   }
   @media (min-width: 1200px) {
     $dataWidth: 40vw;
+    $leftMargin: 20px;
 
     .doc-container {
-      margin-right: $dataWidth;
+      width: calc(
+        #{100vw - $dataWidth} - #{$leftMargin} - #{$containerPadding}
+      );
     }
     .side-panel,
+    .side-panel .wrapper-1,
     .side-panel-placeholder {
       width: $dataWidth;
-    }
-    .wrapper-2 {
-      width: calc(#{$dataWidth} - 80px);
     }
   }
 
@@ -169,14 +167,7 @@
 
       .wrapper-1 {
         width: 100vw;
-        padding: 0 10px;
         background: white;
-      }
-
-      .similar-fragment {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
       }
 
       &.deployed {

@@ -10,16 +10,13 @@ import {
   FragmentLight,
 } from "../core/types";
 import { getDoc, getSimilarFragments, setFragmentTags } from "../core/client";
-import {
-  getFragmentURL,
-  getURLFromFragment,
-  getURLFromFragmentLight,
-} from "../core/helpers";
+import { getFragmentURL, getURLFromFragment } from "../core/helpers";
 import Header from "./Header";
 import config from "../config";
 import TypeLabel from "./TypeLabel";
 import TagsList from "./TagsList";
 import { Loader, LoaderOverlay } from "./Loaders";
+import FragmentStandalone from "./FragmentStandalone";
 
 function getFragmentID(location: Location): string | null {
   return location.hash.replace(/^#+/, "") || null;
@@ -36,6 +33,7 @@ const Fragment: FC<{
   const [similarFragments, setSimilarFragments] = useState<
     FragmentLight[] | null
   >(null);
+  const sidePanel = useRef<HTMLDivElement>(null);
 
   // Load similar fragments when needed:
   useEffect(() => {
@@ -56,6 +54,28 @@ const Fragment: FC<{
 
     return () => document.body.classList.remove("no-scroll");
   }, [showSidePanel]);
+
+  // On large screen, prevent body scroll when side panel does not scroll
+  // anymore:
+  const enterHandler = (): void => {
+    document.body.classList.add("no-scroll");
+  };
+  const leaveHandler = (): void => {
+    document.body.classList.remove("no-scroll");
+  };
+  useEffect(() => {
+    if (sidePanel.current) {
+      sidePanel.current.addEventListener("mouseenter", enterHandler);
+      sidePanel.current.addEventListener("mouseleave", leaveHandler);
+    }
+
+    return () => {
+      if (sidePanel.current) {
+        sidePanel.current.removeEventListener("mouseenter", enterHandler);
+        sidePanel.current.removeEventListener("mouseleave", leaveHandler);
+      }
+    };
+  }, [sidePanel.current]);
 
   // When fragment becomes inactive, hide its side panel:
   useEffect(() => {
@@ -91,7 +111,10 @@ const Fragment: FC<{
       </button>
 
       {isActive && (
-        <div className={cx("side-panel", showSidePanel && "deployed")}>
+        <div
+          className={cx("side-panel", showSidePanel && "deployed")}
+          ref={sidePanel}
+        >
           <div className="wrapper-1">
             <button
               className="unstyled"
@@ -118,9 +141,7 @@ const Fragment: FC<{
                         key={neighbor.fragmentId}
                         className="similar-fragment"
                       >
-                        <Link to={getURLFromFragmentLight(neighbor)}>
-                          {neighbor.text}
-                        </Link>
+                        <FragmentStandalone fragment={neighbor} />
                       </li>
                     ))}
                   </ul>
@@ -185,15 +206,21 @@ const Doc: FC = () => {
       setDoc(null);
 
       getDoc(docId).then((result) => {
+        const hasFoundFragment =
+          !!highlightedFragmentId &&
+          result.fragments.some(({ id }) => id === highlightedFragmentId);
+
         // If fragment is valid, scroll to it:
-        if (
-          highlightedFragmentId &&
-          result.fragments.some(({ id }) => id === highlightedFragmentId)
-        ) {
+        if (highlightedFragmentId && hasFoundFragment) {
           frameId = requestAnimationFrame(() => {
             frameId = null;
             focusFragment(highlightedFragmentId);
           });
+        }
+
+        // If fragment is not valid, remove it from the URL:
+        if (highlightedFragmentId && !hasFoundFragment) {
+          history.push(getFragmentURL(result.id));
         }
 
         // Finally, update state:
