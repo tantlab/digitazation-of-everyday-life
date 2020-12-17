@@ -9,7 +9,12 @@ import {
   Fragment as FragmentType,
   FragmentLight,
 } from "../core/types";
-import { getDoc, getSimilarFragments, setFragmentTags } from "../core/client";
+import {
+  autocomplete,
+  getDoc,
+  getSimilarFragments,
+  setFragmentTags,
+} from "../core/client";
 import { getFragmentURL, getURLFromFragment } from "../core/helpers";
 import Header from "./Header";
 import config from "../config";
@@ -152,15 +157,18 @@ const Fragment: FC<{
               )}
               <h4>user generated Tags</h4>
               <TagsList
+                updateTags={setTags}
                 tags={fragment.userTags}
                 isLoading={isSettingTags}
-                updateTags={setTags}
+                autocomplete={(query, size) =>
+                  autocomplete("userTags", query, size)
+                }
               />
               <br />
               <hr />
               <br />
               <h4>Machine generated Tags</h4>
-              <TagsList tags={fragment.machineTags} isLoading={isSettingTags} />
+              <TagsList tags={fragment.machineTags} />
               <br />
               <hr />
               <br />
