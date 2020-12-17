@@ -19,7 +19,7 @@ const PARTNERS = [
   },
   {
     label: "The Techno-Anthropology Lab",
-    img: "/img/logo-tantlab.svg",
+    img: "/img/logo-tantlab.png",
     url: "https://www.tantlab.aau.dk/",
   },
 ];
@@ -34,7 +34,7 @@ const About: FC = () => (
       <h4>
         Download all tags here:{" "}
         <a href="">
-          <i className="fas fa-download"></i> tags.csv
+          <i className="fas fa-download" /> tags.csv
         </a>
       </h4>
 
@@ -77,7 +77,7 @@ const About: FC = () => (
       <div className="partners">
         {PARTNERS.map(({ url, label, img }, i) => (
           <div key={i}>
-            <a className="unstyled" href={url}>
+            <a className="unstyled" href={url} title={label}>
               <img src={img} alt={label} />
             </a>
           </div>
