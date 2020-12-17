@@ -38,7 +38,6 @@ const Fragment: FC<{
   const [similarFragments, setSimilarFragments] = useState<
     FragmentLight[] | null
   >(null);
-  const sidePanel = useRef<HTMLDivElement>(null);
 
   // Load similar fragments when needed:
   useEffect(() => {
@@ -59,28 +58,6 @@ const Fragment: FC<{
 
     return () => document.body.classList.remove("no-scroll");
   }, [showSidePanel]);
-
-  // On large screen, prevent body scroll when side panel does not scroll
-  // anymore:
-  const enterHandler = (): void => {
-    document.body.classList.add("no-scroll");
-  };
-  const leaveHandler = (): void => {
-    document.body.classList.remove("no-scroll");
-  };
-  useEffect(() => {
-    if (sidePanel.current) {
-      sidePanel.current.addEventListener("mouseenter", enterHandler);
-      sidePanel.current.addEventListener("mouseleave", leaveHandler);
-    }
-
-    return () => {
-      if (sidePanel.current) {
-        sidePanel.current.removeEventListener("mouseenter", enterHandler);
-        sidePanel.current.removeEventListener("mouseleave", leaveHandler);
-      }
-    };
-  }, [sidePanel.current]);
 
   // When fragment becomes inactive, hide its side panel:
   useEffect(() => {
@@ -124,7 +101,9 @@ const Fragment: FC<{
       {isActive && (
         <div
           className={cx("side-panel", showSidePanel && "deployed")}
-          ref={sidePanel}
+          // Prevent body scrolling while mouse hovers the side panel on large screen
+          onMouseEnter={() => document.body.classList.add("no-scroll")}
+          onMouseLeave={() => document.body.classList.remove("no-scroll")}
         >
           <div className="wrapper-1">
             <button
