@@ -1,0 +1,33 @@
+.react-select {
+
+  /**
+   * Various styles:
+   */
+  .react-select__control {
+    border-color: $borderColor;
+    box-shadow: none !important;
+
+    &:focus-within {
+      border-color: $mainOrange !important;
+    }
+  }
+
+  .react-select__multi-value {
+    background: $mainOrange;
+    color: white;
+
+    .react-select__multi-value__label {
+      color: white;
+    }
+  }
+  .react-select__multi-value__remove:hover {
+    background: $mainOrange;
+    color: white;
+    cursor: pointer;
+  }
+
+  .react-select__option--is-focused {
+    background: $mainOrange;
+    color: white;
+  }
+}

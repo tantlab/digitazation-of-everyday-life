@@ -122,7 +122,6 @@ const Search: FC = () => {
 
       search({ query, filters: filtersState, size: RESULTS_BATCH_SIZE }).then(
         (value) => {
-          console.log("RESULTS", value);
           setIsLoading(false);
           setSearchResult(value);
         }

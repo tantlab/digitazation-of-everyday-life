@@ -178,7 +178,10 @@ const Filters: FC<{
   );
   const [filtersState, setFiltersState] = useState<FiltersState>(state);
 
-  useEffect(() => setFiltersState(state), [state]);
+  useEffect(() => {
+    setFiltersState(state);
+    if (!Object.keys(state).length) setShowFilters(false);
+  }, [state]);
 
   return (
     <div className="filters-panel">
