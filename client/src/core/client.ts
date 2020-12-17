@@ -1,6 +1,6 @@
-import { cloneDeep, sampleSize } from "lodash";
+import _, { cloneDeep, random, sampleSize } from "lodash";
 
-import { Doc, Filter, Fragment, FragmentLight } from "./types";
+import { Doc, FiltersState, Fragment, FragmentLight } from "./types";
 import createFakeDataset, { lightenFragment } from "./createFakeDataset";
 
 /**
@@ -21,7 +21,7 @@ export function search({
   offset = 0,
 }: {
   query: string;
-  filters?: Record<string, Filter>;
+  filters?: FiltersState;
   offset?: number;
   size?: number;
 }): Promise<{ total: number; results: FragmentLight[] }> {
@@ -58,4 +58,26 @@ export function setFragmentTags(
 
   DATASET.fragments[fragmentId].tags = tags;
   return later(cloneDeep(DATASET.fragments[fragmentId]));
+}
+
+export function autocomplete(
+  field: string,
+  query: string,
+  count: number
+): Promise<string[]> {
+  const lQuery = query.toLowerCase();
+  const values = _(DATASET.docs)
+    .values()
+    .flatMap(
+      (doc) =>
+        (field === "type" || field === "tags"
+          ? doc[field]
+          : doc.metadata[field]) || []
+    )
+    .filter((s) => s.toLowerCase().includes(lQuery))
+    .intersection()
+    .take(count)
+    .value();
+
+  return later(values);
 }

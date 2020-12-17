@@ -1,6 +1,29 @@
 import config from "../config";
 
-export type Filter = unknown; // TODO
+export type TermsFilterState = {
+  type: "terms";
+  value: string[];
+};
+
+export type DatesFilterState = {
+  type: "dates";
+  value: {
+    min?: string;
+    max?: string;
+  };
+};
+
+export type FilterState = TermsFilterState | DatesFilterState;
+
+export type FiltersState = Record<string, FilterState>;
+
+export type FilterDef = {
+  label: string;
+  field: string;
+  type: "terms" | "dates";
+  placeholder?: string; // Only for terms filters (and still optional)
+  values?: { value: string; label: string }[]; // Only for DataType filter
+};
 
 export type DataType = keyof typeof config.dataTypes;
 

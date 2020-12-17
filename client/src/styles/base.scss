@@ -100,12 +100,15 @@ button {
   color: white;
   border: none;
   outline: none;
-  cursor: pointer;
 
   @extend .label;
 
-  &:hover {
+  &:not([disabled]):hover {
+    cursor: pointer;
     text-decoration: underline;
+  }
+  &[disabled] {
+    background: grey;
   }
 }
 input {

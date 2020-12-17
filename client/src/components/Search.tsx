@@ -1,20 +1,28 @@
 import React, { FC, useCallback, useEffect, useState } from "react";
 import { Link, useHistory, useLocation } from "react-router-dom";
+import cx from "classnames";
 
-import { getURLFromFragmentLight, getSearchURL } from "../core/helpers";
-import { FragmentLight } from "../core/types";
+import {
+  getURLFromFragmentLight,
+  getSearchURL,
+  getQueryFromURL,
+  getFiltersStateFromURL,
+} from "../core/helpers";
+import { FiltersState, FragmentLight } from "../core/types";
 import { search } from "../core/client";
 import Header from "./Header";
 import TypeLabel from "./TypeLabel";
 import TagsList from "./TagsList";
 import { Loader } from "./Loaders";
+import config from "../config";
+import Filters from "./Filters";
 
-const SEARCH_QUERY_KEY = "q";
 const RESULTS_BATCH_SIZE = 50;
 
-const SearchForm: FC<{ initialQuery?: string; onSubmit: () => void }> = (
-  props
-) => {
+const SearchForm: FC<{
+  initialQuery?: string;
+  onSubmit: (query: string) => void;
+}> = (props) => {
   const history = useHistory();
   const [query, setQuery] = useState<string>(props.initialQuery || "");
 
@@ -25,8 +33,7 @@ const SearchForm: FC<{ initialQuery?: string; onSubmit: () => void }> = (
         id="search-form"
         onSubmit={(e) => {
           e.preventDefault();
-          props.onSubmit();
-          if (query) history.push(getSearchURL(query));
+          props.onSubmit(query);
         }}
         onReset={() => {
           setQuery("");
@@ -40,10 +47,8 @@ const SearchForm: FC<{ initialQuery?: string; onSubmit: () => void }> = (
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Type here your query"
         />
-        <button type="reset" title="Cancel">
-          Cancel
-        </button>
-        <button type="submit" title="Search" disabled={!query}>
+        <button type="reset">Cancel</button>
+        <button type="submit" disabled={!query}>
           Search
         </button>
       </form>
@@ -95,8 +100,11 @@ const ResultsList: FC<{
 
 const Search: FC = () => {
   const location = useLocation();
+  const history = useHistory();
+
   const queryParams = new URLSearchParams(location.search);
-  const query = queryParams.get(SEARCH_QUERY_KEY) as string;
+  const query = getQueryFromURL(queryParams) || "";
+  const filtersState = getFiltersStateFromURL(queryParams, config.filters);
 
   // This flag is trivial now, but will take filters into account later:
   const shouldSearch = !!query;
@@ -108,16 +116,19 @@ const Search: FC = () => {
   } | null>(null);
 
   useEffect(() => {
-    if (shouldSearch && !isLoading && !searchResult) {
+    if (shouldSearch && !isLoading) {
       setIsLoading(true);
       setSearchResult(null);
 
-      search({ query, size: RESULTS_BATCH_SIZE }).then((value) => {
-        setIsLoading(false);
-        setSearchResult(value);
-      });
+      search({ query, filters: filtersState, size: RESULTS_BATCH_SIZE }).then(
+        (value) => {
+          console.log("RESULTS", value);
+          setIsLoading(false);
+          setSearchResult(value);
+        }
+      );
     }
-  }, [query, shouldSearch]);
+  }, [location.search]);
 
   const loadMoreResults = useCallback(
     (
@@ -147,12 +158,24 @@ const Search: FC = () => {
   return (
     <>
       <Header />
-      <main className="container search-page">
-        <h1>Everyday Life</h1>
+      <main
+        className={cx("container", "search-page", !shouldSearch && "no-result")}
+      >
+        <h1>The Digitization of Everyday Life During the Corona Crisis</h1>
 
         <SearchForm
           initialQuery={query}
-          onSubmit={() => setSearchResult(null)}
+          onSubmit={(newQuery: string) =>
+            history.push(getSearchURL(newQuery, filtersState))
+          }
+        />
+
+        <Filters
+          state={filtersState}
+          defs={config.filters}
+          onSubmit={(newFiltersState: FiltersState) =>
+            history.push(getSearchURL(query, newFiltersState))
+          }
         />
 
         {shouldSearch && (

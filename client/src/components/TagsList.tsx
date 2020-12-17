@@ -1,4 +1,4 @@
-import React, { FC, useRef, useState } from "react";
+import React, { FC, useState } from "react";
 import { LoaderOverlay } from "./Loaders";
 
 const TagsList: FC<{
@@ -34,7 +34,8 @@ const TagsList: FC<{
       )}
       {updateTags && (
         <form
-          onSubmit={() => {
+          onSubmit={(e) => {
+            e.preventDefault();
             updateTags([...tags, ...value.split(",").map((s) => s.trim())]);
           }}
         >

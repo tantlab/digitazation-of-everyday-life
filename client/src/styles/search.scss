@@ -1,6 +1,12 @@
 .search-page {
   padding-bottom: 10em;
 
+  padding-top: 2em;
+  transition: padding-top $transitionDuration;
+  &.no-result {
+    padding-top: 30vh;
+  }
+
   .content {
     @extend .typo-content;
   }
@@ -18,5 +24,52 @@
 
   .results-list > li {
     margin-top: 4em;
+  }
+
+  .filters-panel {
+    margin: 1em 0;
+
+    form > .buttons {
+      text-align: right;
+      button {
+        margin-left: 0.5em;
+      }
+    }
+  }
+
+  .filters {
+    margin: 1em 0;
+
+    & > .filter {
+      margin: 1em 0;
+    }
+  }
+  @media (min-width: 800px) {
+    .filters {
+      display: flex;
+      flex-direction: row;
+
+      & > .filter {
+        flex: 1 1 0;
+
+        &:not(:last-child) {
+          margin-right: 1em;
+        }
+      }
+    }
+  }
+
+  .dates-filter {
+    & > div {
+      @extend .inline-flex;
+      align-items: center;
+      margin: 0.4em 0;
+    }
+    label {
+      width: 4em;
+    }
+    input {
+      flex-grow: 1;
+    }
   }
 }
