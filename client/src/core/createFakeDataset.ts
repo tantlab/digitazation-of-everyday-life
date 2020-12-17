@@ -54,7 +54,7 @@ export default function createFakeDataset(): {
       images:
         Math.random() > 0.2
           ? times(random(6), () =>
-              faker.image.imageUrl(random(100, 5000), random(100, 500))
+              faker.image.imageUrl(random(100, 500), random(100, 500))
             )
           : undefined,
 

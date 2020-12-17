@@ -140,7 +140,7 @@ const Fragment: FC<{
                   <h4>Images</h4>
                   <div className="images">
                     {fragment.images.map((url) => (
-                      <div className="image">
+                      <div className="image" key={url}>
                         <img src={url} alt="" />
                         <div className="caption">
                           <a href={url} target="_blank">
@@ -356,9 +356,11 @@ const Doc: FC = () => {
                 <ul className="unstyled">
                   {doc.similarDocIDs.map((docID) => (
                     <li key={docID}>
-                      <Link to={getFragmentURL(docID)}>
-                        <i className="fas fa-link" /> Doc {docID}
-                      </Link>
+                      <h5>
+                        <Link to={getFragmentURL(docID)}>
+                          <i className="fas fa-link" /> Doc {docID}
+                        </Link>
+                      </h5>
                     </li>
                   ))}
                 </ul>

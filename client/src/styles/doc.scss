@@ -84,8 +84,10 @@
   }
 
   .images {
-    white-space: nowrap;
+    display: flex;
+    justify-content: center;
     overflow-x: auto;
+    overflow-y: hidden;
 
     .image {
       position: relative;
@@ -93,7 +95,7 @@
       height: 200px;
 
       img {
-        max-height: 100%;
+        height: 100%;
       }
 
       .caption {
