@@ -1,0 +1,10 @@
+= Data folder
+
+This folder is place where you have to put the project's data.
+It is composoed of two folders :
+
+* `csv` that must contains the csv that will be used in the initial import
+* `images` that should contains all the images of the imported data
+
+The *CSV* folder is only used by the API service during the initialization process,
+while the *images* one is used by the web server (nginx) to serve the files.
