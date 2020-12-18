@@ -1,2 +1,2 @@
-import/data/*
+api/data/*
 docker/elasticsearch/data/*
