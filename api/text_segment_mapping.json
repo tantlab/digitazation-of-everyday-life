@@ -27,6 +27,31 @@
         },
         "order": {
             "type": "short"
+        },
+        "image_o_me":{
+            "type": "keyword"
+        },
+        "date_i_o_me":{
+            "type": "date",
+            "format": "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd" 
+        },
+        "protocol_type_i_o_me": {
+            "type": "keyword"
+        },
+        "job_i_me": {
+            "type": "keyword"
+        },
+        "age_i_me" : {
+            "type": "keyword"
+        },
+        "residence_i_me" : {
+            "type": "keyword"
+        },
+        "housemates_i_me" : {
+            "type": "keyword"
+        },
+        "platform_o" : {
+            "type": "keyword"
         }
     }
 }

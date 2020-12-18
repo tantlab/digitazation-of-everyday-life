@@ -8,6 +8,8 @@ ELASTICSEARCH_HOST="localhost"
 ELASTICSEARCH_PORT="9200"
 DELETE_INDEX=True
 
+DOC_FIELDS_INTO_SEGMENTS = ['protocol_type_i_o_me', 'job_i_me', 'age_i_me', 'residence_i_me', 'housemates_i_me', 'platform_o']
+
 
 if __name__ == '__main__':
 
@@ -17,51 +19,57 @@ if __name__ == '__main__':
 
     print("Starting data indexation")
     es = Elasticsearch('%s:%s'%(ELASTICSEARCH_HOST, ELASTICSEARCH_PORT))
-    if es.indices.exists(index='text_segments' ) and DELETE_INDEX:
-        print('index deleted')
-        es.indices.delete(index='text_segments')
-    if not es.indices.exists(index='text_segments'):
-        es.indices.create(index='text_segments')
-        es.indices.close(index='text_segments')
+    for index in ["text_segments", "documents"]:
+        if es.indices.exists(index=index ) and DELETE_INDEX:
+            print('index %s deleted'%index)
+            es.indices.delete(index=index)
+        if not es.indices.exists(index=index):
+            es.indices.create(index=index)
+            es.indices.close(index=index)
         
-        # in cas we need specific keyword, add this filter
-        # "danish_keywords": {
-        #             "type":       "keyword_marker",
-        #             "keywords":   ["eksempel"] 
-        #             },
-        es.indices.put_settings(index='text_segments', body={
-            "analysis": {
-                "filter": {
-                    "danish_stop": {
-                    "type":       "stop",
-                    "stopwords":  "_danish_" 
-                    },
-                    "danish_stemmer": {
-                    "type":       "stemmer",
-                    "language":   "danish"
-                    }
+    # in cas we need specific keyword, add this filter
+    # "danish_keywords": {
+    #             "type":       "keyword_marker",
+    #             "keywords":   ["eksempel"] 
+    #             },
+    es.indices.put_settings(index='text_segments', body={
+        "analysis": {
+            "filter": {
+                "danish_stop": {
+                "type":       "stop",
+                "stopwords":  "_danish_" 
                 },
-                "analyzer": {
-                    "rebuilt_danish": {
-                    "tokenizer":  "standard",
-                    "filter": [
-                        "lowercase",
-                        "danish_stop",
-                        #"danish_keywords",
-                        "danish_stemmer"
-                    ]
-                    }
+                "danish_stemmer": {
+                "type":       "stemmer",
+                "language":   "danish"
+                }
+            },
+            "analyzer": {
+                "rebuilt_danish": {
+                "tokenizer":  "standard",
+                "filter": [
+                    "lowercase",
+                    "danish_stop",
+                    #"danish_keywords",
+                    "danish_stemmer"
+                ]
                 }
             }
-        })
+        }
+    })
 
-        if text_segment_mapping:
-            es.indices.put_mapping(index='text_segments', body = text_segment_mapping )
-        es.indices.open(index='text_segments')
+    if text_segment_mapping:
+        es.indices.put_mapping(index='text_segments', body = text_segment_mapping )
+    for index in ["text_segments", "documents"]:
+        es.indices.open(index=index)
 
-    with open('data/text_segment.csv', 'r', encoding='utf8') as segments_f, open('data/text_segment_metadata.csv', 'r', encoding='utf8') as segments_meta_f:
+    with open('data/text_segment.csv', 'r', encoding='utf8') as segments_f, open('data/text_segment_metadata.csv', 'r', encoding='utf8') as segments_meta_f, open('data/document_metadata.csv', 'r', encoding='utf8') as docs_meta_f:
         # hashmap of segments
         segments_content = {s["text_segment_id"]:s for s in csv.DictReader(segments_f)}
+        # hashmap of docs
+        docs = {s["document_id"]:s for s in csv.DictReader(docs_meta_f)}
+        for _,doc in docs.items():
+            del(doc['']) #remove line number
         
         segment_meta_CSV = csv.DictReader(segments_meta_f)
         all_segments = list(segment_meta_CSV)
@@ -89,6 +97,8 @@ if __name__ == '__main__':
                     if next_segment['ner_tag'] != '':
                         next_segment['ner_tag'] = ast.literal_eval(next_segment['ner_tag'])
                     next_segment['text_segment_similarity_id'] = ast.literal_eval(next_segment['text_segment_similarity_id'])
+                    # nan in date
+                    next_segment['date_i_o_me'] = next_segment['date_i_o_me'].replace(" nan", "")
                     # content
                     if next_segment['text_segment_id'] in segments_content:
                         sc = segments_content[next_segment['text_segment_id']]
@@ -96,6 +106,14 @@ if __name__ == '__main__':
                         next_segment["text_answer"] = sc['text_answer']
                     else:
                         raise Exception("segment ID %s not found in segment content CSV"%s['text_segment_id'])
+                    # doc meta injected to ease search
+                    if next_segment['document_id'] in docs:
+                        doc = docs[next_segment['document_id']]
+                        for f in DOC_FIELDS_INTO_SEGMENTS:
+                            next_segment[f] = doc[f]
+                    else:
+                        raise Exception("segment ID %s has an unknow doc id %s"%(next_segment['text_segment_id'], next_segment['document_id']))
+
                     segments_in_order.append(next_segment)
                     last_segment_id = next_segment["text_segment_id"]
                 else:
@@ -111,3 +129,15 @@ if __name__ == '__main__':
             index='text_segments')
         if index_result > 0:
             print("%s text_segments inserted"%(index_result))
+        
+        # documents
+        index_result, _ = helpers.bulk(es, ({
+            "_op_type": "update",
+            "doc_as_upsert": True,
+            "_id": doc_id,
+            'doc':d}
+                for doc_id,d in docs.items()),
+            index='documents')
+        if index_result > 0:
+            print("%s documents inserted"%(index_result))
+        
