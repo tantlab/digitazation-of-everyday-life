@@ -58,7 +58,7 @@ export default function createFakeDataset(): {
             )
           : undefined,
 
-      docId: sample(DOC_IDS) as string,
+      docId: doc.id,
       docType: doc.type,
       docMetadata: doc.metadata,
     };
