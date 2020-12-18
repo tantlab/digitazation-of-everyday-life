@@ -1,2 +1,10 @@
-api/data/*
-docker/elasticsearch/data/*
+# Ignore data folders
+/data/images/*
+/data/csv/*
+/api/data
+/api/__pycache__
+/docker/elasticsearch/data/*
+
+# client
+/client/build
+/client/node_modules
