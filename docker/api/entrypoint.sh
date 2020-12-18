@@ -27,7 +27,8 @@ if [ "$MODE" = "dev" ]; then
 else
   echo
   echo " ~"
-  echo " ~ TODO"
+  echo " ~ Start Gunicorn"
   echo " ~"
   echo
+  gunicorn -c ./gunicorn.conf.py wsgi:app
 fi
