@@ -36,6 +36,8 @@ export interface Doc {
   metadata: { [field: string]: string };
   similarDocIDs: string[];
 }
+// refacto Paul API
+// there are no date on doc. We could imply one from segments... ?
 
 export interface Fragment {
   id: string;
@@ -49,6 +51,9 @@ export interface Fragment {
   docType: DataType;
   docMetadata: { [field: string]: string };
 }
+// Paul refacto from API
+// text have to be splitted into question and answer fields
+// docMetadata is not used, we should remove it
 
 export interface FragmentLight {
   type: DataType;
@@ -58,7 +63,8 @@ export interface FragmentLight {
   text: string; // This can be just an abstract, or the full text
   // Paul refacto: Here I propose to:
   // - split text into question and answer fields
-  // - use two fields for each on text and one for search highlights
-  // answer: {text: string, highlights : html[]} // highlights is text with em tags
-  // question: {text: string, highlights : html[]} // highlights is text with em tags
+  // - use two fields for text and one for search highlights
+  // answer:  string,
+  // question: string,
+  // highlights : {answer:html[], question:html[]} // highlights is text with em tags
 }

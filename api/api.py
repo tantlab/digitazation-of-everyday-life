@@ -1,8 +1,8 @@
 from flask import Flask
-from flask import request
+from flask import request, abort
 from elasticsearch import Elasticsearch, helpers, exceptions
 from config import ELASTICSEARCH_HOST, ELASTICSEARCH_PORT
-
+from models import segment, document
 app = Flask(__name__)
 
 @app.route('/ping')
@@ -53,13 +53,33 @@ def search(method='GET'):
             "docId": h['_source']['document_id'],
             "fragmentId": h['_source']['text_segment_id'],
             "machineTags": machine_tags(h),
-            "question": {
-                "text": h['_source']['text_question'],
-                "highlights": h['highlight']['text_question'] if 'highlight' in h and 'text_question' in h['highlight'] else []
-            },
-            "answer":{
-                "text": h['_source']['text_answer'],
-                "highlights": h['highlight']['text_answer'] if 'highlight' in h and 'text_answer' in h['highlight'] else []
+            "question": h['_source']['text_question'],
+            "answer": h['_source']['text_answer'],
+            "highlights": {
+                "question": h['highlight']['text_question'] if 'highlight' in h and 'text_question' in h['highlight'] else [],
+                "answer": h['highlight']['text_answer'] if 'highlight' in h and 'text_answer' in h['highlight'] else []
             }
         } for h in results['hits']['hits']]
     }
+
+@app.route('/doc/<string:id>', methods= ['GET'])
+def doc(id):
+    es = Elasticsearch('%s:%s'%(ELASTICSEARCH_HOST, ELASTICSEARCH_PORT))
+    try: 
+        doc = es.get('documents', id)['_source']
+        # segments
+        segment_search = {
+            "size": 9999,
+            "sort": {"order":"asc"},
+            "track_total_hits": True,
+            "query":{
+                "bool":{                
+                    "filter": {
+                    "term": {"document_id": id}
+                }}
+            }
+        }
+        segments = es.search(segment_search, index= 'text_segments')
+        return document(doc, [s['_source'] for s in segments['hits']['hits']])
+    except exceptions.NotFoundError:
+        abort(404)
