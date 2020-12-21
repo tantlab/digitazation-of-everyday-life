@@ -1,0 +1,33 @@
+= API
+
+== GET /doc/{document_id}
+=== response
+
+Doc
+
+== GET /search
+
+=== params
+
+- query
+- size
+- offset
+- **filters multivalues separated by |
+
+=== response
+
+```TypeScript
+{
+    total:  number              // number of total results}
+    results: FragmentLight[]    // list of result in page
+}
+```
+
+== GET /similarSegments/text_segment_id:string
+
+=== response
+
+```TypeScript
+FragmentLight[]    // list of similar fragments
+
+```

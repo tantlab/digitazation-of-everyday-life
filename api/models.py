@@ -1,6 +1,6 @@
 
 
-def translate(o, translation):
+def _translate(o, translation):
     new_o = {}
     for f,of in translation.items():
         if isinstance(of, list):
@@ -21,7 +21,19 @@ def segment(es_segment):
         'docId': 'document_id',
         'docType': 'protocol_type_i_o_me'
     }
-    return translate(es_segment, meta_alignement)
+    return _translate(es_segment, meta_alignement)
+
+def segment_light(es_segment):
+    meta_alignement = {
+            "type": 'protocol_type_i_o_me',
+            "docId": 'document_id',
+            "fragmentId": 'text_segment_id',
+            "machineTags":  ['tfidf_tags', 'ner_tags'],
+            "question": 'text_question',
+            "answer": 'text_answer'
+        }
+    return _translate(es_segment, meta_alignement)
+
 
 def document(es_doc, es_segments=[]):
     meta_alignement = {
@@ -30,7 +42,7 @@ def document(es_doc, es_segments=[]):
         "tags": 'document_tags_i',
         "similarDocIDs": 'related_files_i_o_me',
     }
-    doc = translate(es_doc, meta_alignement)
+    doc = _translate(es_doc, meta_alignement)
     if len(es_segments) > 0:
         doc['fragments'] = [segment(s) for s in es_segments]
     doc["metadata"] = {f:v for f,v in es_doc.items() if f not in meta_alignement.values()}

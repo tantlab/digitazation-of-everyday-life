@@ -1,8 +1,8 @@
 from flask import Flask
-from flask import request, abort
+from flask import request, abort, jsonify
 from elasticsearch import Elasticsearch, helpers, exceptions
 from config import ELASTICSEARCH_HOST, ELASTICSEARCH_PORT
-from models import segment, document
+from models import segment, document, segment_light
 app = Flask(__name__)
 
 @app.route('/ping')
@@ -42,25 +42,17 @@ def search(method='GET'):
         }
     }
     results = es.search(search, index="text_segments")
-    machine_tags = lambda h: \
-        h['_source']['tfidf_tag'] if isinstance(h['_source']['tfidf_tag'],list) else [h['_source']['tfidf_tag']] +\
-        h['_source']['ner_tag'] if isinstance(h['_source']['ner_tag'],list) else [h['_source']['ner_tag']]
-    
+    print([segment_light(s) for s in results['hits']['hits']])
     return {
         "total": results['hits']['total']['value'],
-        "results": [{
-            "type": h['_source']['protocol_type_i_o_me'],
-            "docId": h['_source']['document_id'],
-            "fragmentId": h['_source']['text_segment_id'],
-            "machineTags": machine_tags(h),
-            "question": h['_source']['text_question'],
-            "answer": h['_source']['text_answer'],
-            "highlights": {
-                "question": h['highlight']['text_question'] if 'highlight' in h and 'text_question' in h['highlight'] else [],
-                "answer": h['highlight']['text_answer'] if 'highlight' in h and 'text_answer' in h['highlight'] else []
-            }
-        } for h in results['hits']['hits']]
-    }
+        "results": [ dict(segment_light(s['_source']), **{"highlights": {
+                "question": s['highlight']['text_question'] if 'highlight' in s and 'text_question' in s['highlight'] else [],
+                "answer": s['highlight']['text_answer'] if 'highlight' in s and 'text_answer' in s['highlight'] else []
+            }})
+            for s in results['hits']['hits']]
+    } 
+     
+
 
 @app.route('/doc/<string:id>', methods= ['GET'])
 def doc(id):
@@ -81,5 +73,22 @@ def doc(id):
         }
         segments = es.search(segment_search, index= 'text_segments')
         return document(doc, [s['_source'] for s in segments['hits']['hits']])
+    except exceptions.NotFoundError:
+        abort(404)
+
+@app.route('/similarSegments/<string:id>', methods= ['GET'])
+def similar_segments(id):
+    es = Elasticsearch('%s:%s'%(ELASTICSEARCH_HOST, ELASTICSEARCH_PORT))
+    try: 
+        segment = es.get('text_segments', id)['_source']
+        similar_ids = segment['text_segment_similarity_id']
+        if similar_ids != "" and not isinstance(similar_ids,list):
+            similar_ids = [similar_ids]
+        if len(similar_ids)>0:
+            similar_segments = es.mget(index = 'text_segments',
+                    body = {'ids': similar_ids})
+            return jsonify([segment_light(s['_source']) for s in similar_segments['docs']])
+        else:
+            return []
     except exceptions.NotFoundError:
         abort(404)
