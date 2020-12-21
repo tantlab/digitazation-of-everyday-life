@@ -1,14 +1,15 @@
+#!python
 from elasticsearch import Elasticsearch, helpers
 import csv
 import ast 
 import json
 from itertools import groupby
+import os
 
-ELASTICSEARCH_HOST="localhost"
-ELASTICSEARCH_PORT="9200"
+from config import ELASTICSEARCH_HOST, ELASTICSEARCH_PORT
 DELETE_INDEX=True
 
-DOC_FIELDS_INTO_SEGMENTS = ['protocol_type_i_o_me', 'job_i_me', 'age_i_me', 'residence_i_me', 'housemates_i_me', 'platform_o']
+DOC_FIELDS_INTO_SEGMENTS = ['protocol_type_i_o_me', 'job_i_me', 'age_i_me', 'residence_i_me', 'housemates_i_me', 'platform_o', ]
 
 
 if __name__ == '__main__':
@@ -63,7 +64,7 @@ if __name__ == '__main__':
     for index in ["text_segments", "documents"]:
         es.indices.open(index=index)
 
-    with open('data/text_segment.csv', 'r', encoding='utf8') as segments_f, open('data/text_segment_metadata.csv', 'r', encoding='utf8') as segments_meta_f, open('data/document_metadata.csv', 'r', encoding='utf8') as docs_meta_f:
+    with open('./data/csv/text_segment.csv', 'r', encoding='utf8') as segments_f, open('./data/csv/text_segment_metadata.csv', 'r', encoding='utf8') as segments_meta_f, open('./data/csv/document_metadata.csv', 'r', encoding='utf8') as docs_meta_f:
         # hashmap of segments
         segments_content = {s["text_segment_id"]:s for s in csv.DictReader(segments_f)}
         # hashmap of docs
