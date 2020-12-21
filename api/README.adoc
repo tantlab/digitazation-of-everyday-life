@@ -9,10 +9,10 @@ Doc
 
 === params
 
-- query
-- size
-- offset
-- **filters multivalues separated by |
+- query:string
+- size:number
+- offset:number
+- **filter:string (multivalues separated by |)
 
 === response
 
@@ -22,6 +22,21 @@ Doc
     results: FragmentLight[]    // list of result in page
 }
 ```
+
+== GET /autocomplete
+
+=== params
+
+- query?:string
+- count?:number
+- field:string 
+
+=== response
+
+```TypeScript
+string[]
+```
+
 
 == GET /similarSegments/text_segment_id:string
 

@@ -42,7 +42,6 @@ def search(method='GET'):
         }
     }
     results = es.search(search, index="text_segments")
-    print([segment_light(s) for s in results['hits']['hits']])
     return {
         "total": results['hits']['total']['value'],
         "results": [ dict(segment_light(s['_source']), **{"highlights": {
@@ -53,6 +52,37 @@ def search(method='GET'):
     } 
      
 
+
+
+@app.route('/autocomplete')
+def autocomplete(method='GET'):
+    # params
+    query = request.args.get('query', None)
+    field = request.args.get('field', None)
+    size = request.args.get('count', 10)
+    if not field:
+        abort(404)
+    terms = {
+                    "field":field, 
+                    "size": size, 
+                    "missing": "N/A"
+                }
+    if query:
+        # make the query case sensitive
+        terms["include"] = ".*%s.*"%("".join(["[%s%s]"%(c.lower(),c.upper()) for c in query]))
+    es = Elasticsearch('%s:%s'%(ELASTICSEARCH_HOST, ELASTICSEARCH_PORT))
+    search = {
+        "size": 0,
+        "track_total_hits": True,
+        "aggs": {
+            "suggestions": {
+                "terms": terms 
+            }
+        }
+    }
+    results = es.search(search, index="text_segments")['aggregations']['suggestions']['buckets']
+   
+    return jsonify([r['key']  for r in results])
 
 @app.route('/doc/<string:id>', methods= ['GET'])
 def doc(id):
@@ -92,3 +122,4 @@ def similar_segments(id):
             return []
     except exceptions.NotFoundError:
         abort(404)
+
