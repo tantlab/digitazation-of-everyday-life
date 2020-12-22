@@ -97,6 +97,12 @@ if __name__ == '__main__':
                         next_segment['tfidf_tag'] = ast.literal_eval(next_segment['tfidf_tag'])
                     if next_segment['ner_tag'] != '':
                         next_segment['ner_tag'] = ast.literal_eval(next_segment['ner_tag'])
+                    # force image into list
+                    
+                    if next_segment['image_o_me'] != "" and next_segment['image_o_me'][0] == '[':
+                        next_segment['image_o_me'] = ast.literal_eval(next_segment['image_o_me'])
+                    else:
+                        next_segment['image_o_me'] = [next_segment['image_o_me']] if next_segment['image_o_me']!="" else []
                     next_segment['text_segment_similarity_id'] = ast.literal_eval(next_segment['text_segment_similarity_id'])
                     # nan in date
                     next_segment['date_i_o_me'] = next_segment['date_i_o_me'].replace(" nan", "")

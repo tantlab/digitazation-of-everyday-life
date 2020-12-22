@@ -17,10 +17,11 @@ def segment(es_segment):
         "answer": 'text_answer',
         "images": 'image_o_me',
         'userTags': 'users_tags',
-        'machineTags': ['tfidf_tag', 'ner_tag'],
+        'machineTags': 'machine_tags',
         'docId': 'document_id',
         'docType': 'protocol_type_i_o_me',
-        "date": "date_i_o_me"
+        "date": "date_i_o_me",
+        "images": "image_o_me"
     }
     return _translate(es_segment, meta_alignement)
 
@@ -29,7 +30,7 @@ def segment_light(es_segment):
             "type": 'protocol_type_i_o_me',
             "docId": 'document_id',
             "fragmentId": 'text_segment_id',
-            "machineTags":  ['tfidf_tag', 'ner_tag'],
+            'machineTags': 'machine_tags',
             "question": 'text_question',
             "answer": 'text_answer',
             "date": "date_i_o_me"
