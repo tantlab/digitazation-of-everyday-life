@@ -19,7 +19,8 @@ def segment(es_segment):
         'userTags': 'users_tags',
         'machineTags': ['tfidf_tag', 'ner_tag'],
         'docId': 'document_id',
-        'docType': 'protocol_type_i_o_me'
+        'docType': 'protocol_type_i_o_me',
+        "date": "date_i_o_me"
     }
     return _translate(es_segment, meta_alignement)
 
@@ -30,7 +31,8 @@ def segment_light(es_segment):
             "fragmentId": 'text_segment_id',
             "machineTags":  ['tfidf_tag', 'ner_tag'],
             "question": 'text_question',
-            "answer": 'text_answer'
+            "answer": 'text_answer',
+            "date": "date_i_o_me"
         }
     return _translate(es_segment, meta_alignement)
 
