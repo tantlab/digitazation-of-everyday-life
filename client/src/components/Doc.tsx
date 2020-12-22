@@ -130,9 +130,12 @@ const Fragment: FC<{
                           <div className="image" key={url}>
                             <img src={`${config.assets_url}/${url}`} alt="" />
                             <div className="caption">
-                              <a href={url} target="_blank">
-                                <i className="fas fa-link" />{" "}
-                                {url.match(/[^/]*$/)}
+                              <a
+                                href={`${config.assets_url}/${url}`}
+                                title={`Download ${url.match(/[^/]*$/)}`}
+                                target="_blank"
+                              >
+                                <i className="fas fa-link" /> Download
                               </a>
                             </div>
                           </div>
