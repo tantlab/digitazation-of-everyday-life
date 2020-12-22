@@ -42,7 +42,7 @@ const TagsList: FC<{
             updateTags(objectToStringValue(value as OptionType | OptionType[]))
           }
         />
-      ) : tags.length ? (
+      ) : tags && tags.length ? (
         <p>
           {tags.map((tag, i) => (
             <span key={i} className="tag">
