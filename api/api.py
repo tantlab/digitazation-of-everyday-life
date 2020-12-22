@@ -84,7 +84,7 @@ def autocomplete(method='GET'):
                     "missing": "N/A"
                 }
     if query:
-        # make the query case sensitive
+        # make the query case insensitive
         terms["include"] = ".*%s.*"%("".join(["[%s%s]"%(c.lower(),c.upper()) for c in query]))
     es = Elasticsearch('%s:%s'%(ELASTICSEARCH_HOST, ELASTICSEARCH_PORT))
     search = {
