@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useEffect, useRef, useState } from "react";
 import { Link, useHistory, useLocation, useParams } from "react-router-dom";
-import { intersection, toPairs } from "lodash";
+import { intersection, toPairs, isArray } from "lodash";
 import { Location } from "history";
 import cx from "classnames";
 
@@ -117,26 +117,29 @@ const Fragment: FC<{
               <i className="fas fa-times" />
             </button>
             <div className="wrapper-2">
-              {fragment.images && !!fragment.images.length && (
-                <>
-                  <h4>Images</h4>
-                  <div className="images">
-                    {fragment.images.map((url) => (
-                      <div className="image" key={url}>
-                        <img src={url} alt="" />
-                        <div className="caption">
-                          <a href={url} target="_blank">
-                            <i className="fas fa-link" /> {url.match(/[^/]*$/)}
-                          </a>
+              {fragment.images &&
+                isArray(fragment.images) &&
+                !!fragment.images.length && (
+                  <>
+                    <h4>Images</h4>
+                    <div className="images">
+                      {fragment.images.map((url) => (
+                        <div className="image" key={url}>
+                          <img src={url} alt="" />
+                          <div className="caption">
+                            <a href={url} target="_blank">
+                              <i className="fas fa-link" />{" "}
+                              {url.match(/[^/]*$/)}
+                            </a>
+                          </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
-                  <br />
-                  <hr />
-                  <br />
-                </>
-              )}
+                      ))}
+                    </div>
+                    <br />
+                    <hr />
+                    <br />
+                  </>
+                )}
               <h4>user generated Tags</h4>
               <TagsList
                 updateTags={setTags}
