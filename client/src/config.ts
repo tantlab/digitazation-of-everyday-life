@@ -27,6 +27,7 @@ const dataTypes = {
 export default {
   dataTypes,
   api_url: "/api",
+  assets_url: "/data/images",
   datesBoundaries: {
     min: "1900-01-01",
     max: "2022-01-01",

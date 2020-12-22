@@ -119,21 +119,24 @@ const Fragment: FC<{
             <div className="wrapper-2">
               {fragment.images &&
                 isArray(fragment.images) &&
-                !!fragment.images.length && (
+                !!fragment.images.filter((url) => url !== "Y" && url !== "N")
+                  .length && (
                   <>
                     <h4>Images</h4>
                     <div className="images">
-                      {fragment.images.map((url) => (
-                        <div className="image" key={url}>
-                          <img src={url} alt="" />
-                          <div className="caption">
-                            <a href={url} target="_blank">
-                              <i className="fas fa-link" />{" "}
-                              {url.match(/[^/]*$/)}
-                            </a>
+                      {fragment.images
+                        .filter((url) => url !== "Y" && url !== "N")
+                        .map((url) => (
+                          <div className="image" key={url}>
+                            <img src={`${config.assets_url}/${url}`} alt="" />
+                            <div className="caption">
+                              <a href={url} target="_blank">
+                                <i className="fas fa-link" />{" "}
+                                {url.match(/[^/]*$/)}
+                              </a>
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        ))}
                     </div>
                     <br />
                     <hr />
