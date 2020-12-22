@@ -1,4 +1,3 @@
-import _, { cloneDeep, sampleSize } from "lodash";
 import config from "../config";
 
 import { Doc, FiltersState, Fragment, FragmentLight } from "./types";
@@ -59,9 +58,12 @@ export async function setFragmentTags(
   fragmentId: string,
   tags: string[]
 ): Promise<Fragment> {
-  const response = fetch(`${config.api_url}/fragment/${fragmentId}`, {
+  const response = await fetch(`${config.api_url}/fragment/${fragmentId}`, {
     method: "POST",
-    body: { tags },
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ tags }),
   });
   const result = await response.json();
   return result;
