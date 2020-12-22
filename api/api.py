@@ -1,8 +1,10 @@
 from flask import Flask
-from flask import request, abort, jsonify
+from flask import request, abort, jsonify, Response
 from elasticsearch import Elasticsearch, helpers, exceptions
 from config import ELASTICSEARCH_HOST, ELASTICSEARCH_PORT
 from models import segment, document, segment_light
+import csv
+import io
 app = Flask(__name__)
 
 @app.route('/ping')
@@ -56,9 +58,9 @@ def search(method='GET'):
             search["query"]["bool"]["filter"][0]["range"]["date_i_o_me"]["lte"] = date_max
         if date_min:
             search["query"]["bool"]["filter"][0]["range"]["date_i_o_me"]["gte"] = date_min
-    print(search)
+
     results = es.search(search, index="text_segments")
-    print(results)
+
     return {
         "total": results['hits']['total']['value'],
         "results": [ dict(segment_light(s['_source']), **{"highlights": s['highlight']['search'] if 'highlight' in s and 'search' in s['highlight'] else []})
@@ -152,4 +154,28 @@ def update_segment(id):
 
     except exceptions.NotFoundError:
         abort(404)
+
+@app.route('/user_tags.csv')
+def user_tags_csv(method='GET'):
+    es = Elasticsearch('%s:%s'%(ELASTICSEARCH_HOST, ELASTICSEARCH_PORT))
+    
+    segs = es.search({
+        "size": 9999,
+        "query":{
+            "bool": {
+            "must":
+                {
+                "exists": {
+                    "field": "user_tags"
+                }
+                            }
+            }
+        },
+        "_source":["document_id", "text_segment_id", "user_tags"]
+    }, index= "text_segments")
+    csvString =  io.StringIO()
+    writer = csv.DictWriter(csvString,["document_id", "text_segment_id", "user_tags"])
+    writer.writeheader()
+    writer.writerows(seg['_source'] for seg in segs['hits']['hits'])
+    return Response(csvString.getvalue(), mimetype='text/csv')
 
