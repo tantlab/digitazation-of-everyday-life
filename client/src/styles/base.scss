@@ -145,17 +145,36 @@ hr {
 
     i {
       color: $mainOrange;
+      position: absolute;
+      margin-left: -20px;
     }
 
-    &.question {
-      font-weight: bold;
-    }
+    span {
+      .question {
+        margin-top: 0;
+        font-weight: bold;
+      }
 
-    &.answer {
-      display: -webkit-box;
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 3;
-      overflow: hidden;
+      .answer {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3;
+        overflow: hidden;
+      }
+    }
+  }
+}
+.side-panel {
+  .fragment-standalone {
+    .content {
+      i {
+        position: relative;
+        display: block;
+        margin: 0;
+        left:-20px;
+        height: 0;
+        width: 0
+      }
     }
   }
 }

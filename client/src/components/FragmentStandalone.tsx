@@ -16,11 +16,13 @@ const Fragment: FC<{ fragment: FragmentLight; showTags?: boolean }> = ({
 }) => (
   <div className="fragment-standalone">
     <Link to={getURLFromFragmentLight(fragment)}>
-      <p className="content question">
+      <div className="content">
         <i className="fas fa-link" />
-        {fragment.question}
-      </p>
-      <p className="content answer">{fragment.answer}</p>
+        <span>
+          <p className="question">{fragment.question}</p>
+          <p className="answer">{fragment.answer}</p>
+        </span>
+      </div>
     </Link>
     {showTags && fragment.machineTags && (
       <TagsList tags={fragment.machineTags} />
