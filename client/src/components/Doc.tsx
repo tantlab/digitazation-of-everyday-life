@@ -152,7 +152,7 @@ const Fragment: FC<{
                 tags={fragment.userTags}
                 isLoading={isSettingTags}
                 autocomplete={(query, size) =>
-                  autocomplete("userTags", query, size)
+                  autocomplete("user_tags", query, size)
                 }
               />
               <br />
