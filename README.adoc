@@ -2,6 +2,8 @@
 
 include::./client/README.adoc[leveloffset=+1]
 
+include::./api/README.adoc[leveloffset=+1]
+
 include::./data/README.adoc[leveloffset=+1]
 
 include::./docker/README.adoc[leveloffset=+1]

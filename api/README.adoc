@@ -1,6 +1,15 @@
 = API
 
+== Indexation
+
+To index the data into elasticsearch, you have to call the python script `index_data_in_ES.py`.
+
+This is the command for docker : `docker exec -it api_1  bash -c "cd /api && python index_data_in_ES.py"`
+
+NOTE: this command work if the container of the APi is named `api_1` (default value)
+
 == GET /doc/{document_id}
+
 === response
 
 Doc
@@ -29,7 +38,7 @@ Doc
 
 - query?:string
 - count?:number
-- field:string 
+- field:string
 
 === response
 
