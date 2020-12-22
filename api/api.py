@@ -15,8 +15,12 @@ def search(method='GET'):
     query = request.args.get('query', '*')
     size = request.args.get('size', 200)
     offset = request.args.get('offset', 0)
+    # date
+    dates = request.args.get('date', None)
+    if dates:
+        date_min, date_max = dates.split('|')
     # demultiplex filters
-    filters = {field:value.split('|') for field, value in request.args.items() if field not in ["query", "size", "offset"]}
+    filters = [(field,v) for field, value in request.args.items() for v in value.split('|') if field not in ["query", "size", "offset", "date"]]
 
     es = Elasticsearch('%s:%s'%(ELASTICSEARCH_HOST, ELASTICSEARCH_PORT))
     search = {
@@ -30,8 +34,7 @@ def search(method='GET'):
                         "query": query ,
                         "fields": ["text_answer","text_question"]
                     }
-                },
-                "filter": [{"terms": {f: v}} for f,v in filters.items()]
+                }
             }
         },
         "highlight": {
@@ -41,6 +44,18 @@ def search(method='GET'):
             }
         }
     }
+    # filters in ES
+    if len(filters)>0:
+        search["query"]["bool"]["should"] = [{"term": {f: v}} for f,v in filters]
+        search["query"]["bool"]["minimum_should_match"] = 1
+    # date in ES
+    if dates:
+        search["query"]["bool"]["filter"]= [{"range": {"date_i_o_me": {}}}]
+        if date_max:
+            search["query"]["bool"]["filter"][0]["range"]["date_i_o_me"]["lte"] = date_max
+        if date_min:
+            search["query"]["bool"]["filter"][0]["range"]["date_i_o_me"]["gte"] = date_min
+ 
     results = es.search(search, index="text_segments")
     return {
         "total": results['hits']['total']['value'],
