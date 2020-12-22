@@ -48,7 +48,7 @@ export default {
     },
     {
       label: "Doc type",
-      field: "docType",
+      field: "protocol_type_i_o_me",
       type: "terms",
       values: toPairs(dataTypes).map(([key, value]) => ({
         value: key,
@@ -57,12 +57,12 @@ export default {
     },
     {
       label: "User Tags",
-      field: "userTags",
+      field: "user_tags",
       type: "terms",
     },
     {
       label: "Machine Tags",
-      field: "machineTags",
+      field: "machine_tags",
       type: "terms",
     },
     {
