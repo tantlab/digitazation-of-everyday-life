@@ -138,3 +138,19 @@ def similar_segments(id):
     except exceptions.NotFoundError:
         abort(404)
 
+
+@app.route('/fragment/<string:id>', methods= ['POST'])
+def update_segment(id):
+    es = Elasticsearch('%s:%s'%(ELASTICSEARCH_HOST, ELASTICSEARCH_PORT))
+    try: 
+        # restrict update to user_tags field
+        body = request.get_json()
+        if "user_tags" not in body:
+            abort(400)
+        doc = {"doc": {"user_tags" : body["user_tags"]}, "_source": True}
+        seg = es.update('text_segments', id, doc)
+        return segment(seg['get']['_source'])
+
+    except exceptions.NotFoundError:
+        abort(404)
+

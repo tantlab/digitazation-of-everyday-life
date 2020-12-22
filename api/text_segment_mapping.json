@@ -16,6 +16,9 @@
             "analyzer": "rebuilt_danish",
             "term_vector": "with_positions_offsets"
         },
+        "user_tags": {
+            "type": "keyword"
+        },
         "machine_tags": {
             "type": "keyword"
         },

@@ -16,7 +16,7 @@ def segment(es_segment):
         "question": 'text_question', 
         "answer": 'text_answer',
         "images": 'image_o_me',
-        'userTags': 'users_tags',
+        'userTags': 'user_tags',
         'machineTags': 'machine_tags',
         'docId': 'document_id',
         'docType': 'protocol_type_i_o_me',

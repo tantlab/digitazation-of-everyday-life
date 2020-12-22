@@ -46,3 +46,22 @@ string[]
 FragmentLight[]    // list of similar fragments
 
 ```
+
+== POST /fragment/text_segment_id:string
+
+=== body
+
+```json
+{
+    "user_tags":["tag 1", "tag 2"]
+}
+```
+
+Other fields than user_tags will be ignored for security reasons.
+
+=== response
+
+a fragment
+
+403 if no user_tags in body
+404 if wrong id
