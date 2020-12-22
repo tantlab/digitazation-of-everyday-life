@@ -17,7 +17,7 @@ def segment(es_segment):
         "answer": 'text_answer',
         "images": 'image_o_me',
         'userTags': 'users_tags',
-        'machineTags': ['tfidf_tags', 'ner_tags'],
+        'machineTags': ['tfidf_tag', 'ner_tag'],
         'docId': 'document_id',
         'docType': 'protocol_type_i_o_me'
     }
@@ -28,7 +28,7 @@ def segment_light(es_segment):
             "type": 'protocol_type_i_o_me',
             "docId": 'document_id',
             "fragmentId": 'text_segment_id',
-            "machineTags":  ['tfidf_tags', 'ner_tags'],
+            "machineTags":  ['tfidf_tag', 'ner_tag'],
             "question": 'text_question',
             "answer": 'text_answer'
         }
