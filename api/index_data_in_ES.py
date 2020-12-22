@@ -93,9 +93,13 @@ if __name__ == '__main__':
                     # segment metadata management
                     del(next_segment[''])
                     # lists
-                    if next_segment['tfidf_tag'] != '':
+                    if next_segment['tfidf_tag'] == '':
+                        next_segment['tfidf_tag'] = [] 
+                    else:
                         next_segment['tfidf_tag'] = ast.literal_eval(next_segment['tfidf_tag'])
-                    if next_segment['ner_tag'] != '':
+                    if next_segment['ner_tag'] == '':
+                        next_segment['ner_tag'] = []
+                    else:
                         next_segment['ner_tag'] = ast.literal_eval(next_segment['ner_tag'])
                     # force image into list
                     
@@ -103,7 +107,11 @@ if __name__ == '__main__':
                         next_segment['image_o_me'] = ast.literal_eval(next_segment['image_o_me'])
                     else:
                         next_segment['image_o_me'] = [next_segment['image_o_me']] if next_segment['image_o_me']!="" else []
-                    next_segment['text_segment_similarity_id'] = ast.literal_eval(next_segment['text_segment_similarity_id'])
+                    if  next_segment['text_segment_similarity_id'] == '':
+                        next_segment['text_segment_similarity_id'] = []
+                    else:
+                        next_segment['text_segment_similarity_id'] = ast.literal_eval(next_segment['text_segment_similarity_id'])
+                    
                     # nan in date
                     next_segment['date_i_o_me'] = next_segment['date_i_o_me'].replace(" nan", "")
                     # content
@@ -137,12 +145,16 @@ if __name__ == '__main__':
         if index_result > 0:
             print("%s text_segments inserted"%(index_result))
         
+
+
         # documents
+        def cast_doc(d):
+            return dict(d, **{'document_tags_i': ast.literal_eval(d['document_tags_i'] if d['document_tags_i'] !='' else "[]")})
         index_result, _ = helpers.bulk(es, ({
             "_op_type": "update",
             "doc_as_upsert": True,
             "_id": doc_id,
-            'doc':d}
+            'doc': cast_doc(d)}
                 for doc_id,d in docs.items()),
             index='documents')
         if index_result > 0:
