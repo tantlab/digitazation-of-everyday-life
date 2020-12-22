@@ -15,7 +15,10 @@ const Fragment: FC<{ fragment: FragmentLight; showTags?: boolean }> = ({
   showTags,
 }) => (
   <div className="fragment-standalone">
-    <Link to={getURLFromFragmentLight(fragment)}>
+    <Link
+      to={getURLFromFragmentLight(fragment)}
+      title={`Link to fragment '${fragment.fragmentId}' on document '${fragment.docId}'`}
+    >
       <div className="content">
         <i className="fas fa-link" />
         <span>
@@ -28,7 +31,13 @@ const Fragment: FC<{ fragment: FragmentLight; showTags?: boolean }> = ({
       <TagsList tags={fragment.machineTags} />
     )}
     <h5>
-      From <Link to={getFragmentURL(fragment.docId)}>Doc {fragment.docId}</Link>{" "}
+      From{" "}
+      <Link
+        to={getFragmentURL(fragment.docId)}
+        title={`Link to document '${fragment.docId}'`}
+      >
+        Doc {fragment.docId}
+      </Link>{" "}
       | <TypeLabel type={fragment.type} />
     </h5>
   </div>

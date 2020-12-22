@@ -350,7 +350,10 @@ const Doc: FC = () => {
                   {doc.similarDocIDs.map((docID) => (
                     <li key={docID}>
                       <h5>
-                        <Link to={getFragmentURL(docID)}>
+                        <Link
+                          to={getFragmentURL(docID)}
+                          title={`Link to similar document '${docID}'`}
+                        >
                           <i className="fas fa-link" /> Doc {docID}
                         </Link>
                       </h5>
