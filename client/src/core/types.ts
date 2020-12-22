@@ -60,11 +60,7 @@ export interface FragmentLight {
   docId: string;
   fragmentId: string;
   machineTags: string[];
-  text: string; // This can be just an abstract, or the full text
-  // Paul refacto: Here I propose to:
-  // - split text into question and answer fields
-  // - use two fields for text and one for search highlights
-  // answer:  string,
-  // question: string,
-  // highlights : {answer:html[], question:html[]} // highlights is text with em tags
+  question: string;
+  answer: string;
+  highlights: { answer: string[]; question: string[] };
 }

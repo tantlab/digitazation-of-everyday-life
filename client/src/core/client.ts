@@ -1,4 +1,5 @@
 import _, { cloneDeep, sampleSize } from "lodash";
+import config from "../config";
 
 import { Doc, FiltersState, Fragment, FragmentLight } from "./types";
 import createFakeDataset, { lightenFragment } from "./createFakeDataset";
@@ -14,9 +15,9 @@ function later<T = unknown>(data: T, delay = 1000): Promise<T> {
   return new Promise((resolve) => setTimeout(() => resolve(data), delay));
 }
 
-export function search({
+export async function search({
   query,
-  filters,
+  filters = {},
   size = 50,
   offset = 0,
 }: {
@@ -25,14 +26,30 @@ export function search({
   offset?: number;
   size?: number;
 }): Promise<{ total: number; results: FragmentLight[] }> {
-  const total = 150;
-  return later({
-    total,
-    results: DATASET.fragmentsArray
-      .slice(0, total)
-      .slice(offset, size + offset)
-      .map(lightenFragment),
-  });
+  console.log(filters);
+  // construct query params
+  const queryParams = [
+    `query=${encodeURIComponent(query)}`,
+    `size=${size}`,
+    `offset=${offset}`,
+  ];
+  // add filters to query params
+  for (const field of Object.keys(filters)) {
+    const filter = filters[field];
+    let queryParam = `${field}=`;
+    if (filter.type === "dates") {
+      queryParam += `${filter.value.min || ""}|${filter.value.max || ""}`;
+    } else {
+      queryParam += filter.value.map((e) => encodeURIComponent(e)).join("|");
+    }
+    queryParams.push(queryParam);
+  }
+
+  const response = await fetch(
+    `${config.api_url}/search?${queryParams.join("&")}`
+  );
+  const result = await response.json();
+  return result as { total: number; results: FragmentLight[] };
 }
 
 export function getDoc(docId: string): Promise<Doc> {

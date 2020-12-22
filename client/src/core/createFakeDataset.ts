@@ -7,7 +7,9 @@ export function lightenFragment(fragment: Fragment): FragmentLight {
   return {
     fragmentId: fragment.id,
     docId: fragment.docId,
-    text: fragment.text,
+    answer: fragment.text,
+    question: fragment.text,
+    highlights: { answer: [], question: [] },
     type: fragment.docType,
     machineTags: fragment.machineTags,
   };

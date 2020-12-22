@@ -3,25 +3,30 @@ import { FilterDef } from "./core/types";
 
 const dataTypes = {
   interview: {
-    color: "#815ec5",
+    color: "#9c6ec2",
     icon: "fas fa-microphone-alt",
     label: "Interview",
   },
   observation: {
-    color: "#668f43",
+    color: "#ba883e",
     icon: "fas fa-clipboard",
     label: "Observation",
   },
   diary: {
-    color: "#bb4983",
+    color: "#4cab98",
     icon: "fas fa-book",
     label: "Diary",
+  },
+  "mobile-ethnography": {
+    color: "#cb5362",
+    icon: "fas fa-mobile-alt",
+    label: "Mobile Ethnography",
   },
 };
 
 export default {
   dataTypes,
-
+  api_url: "/api",
   datesBoundaries: {
     min: "1900-01-01",
     max: "2022-01-01",

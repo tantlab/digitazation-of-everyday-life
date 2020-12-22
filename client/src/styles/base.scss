@@ -146,5 +146,16 @@ hr {
     i {
       color: $mainOrange;
     }
+
+    &.question {
+      font-weight: bold;
+    }
+
+    &.answer {
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 3;
+      overflow: hidden;
+    }
   }
 }
