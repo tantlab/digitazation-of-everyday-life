@@ -15,7 +15,6 @@ const TagsList: FC<{
   updateTags?: (tags: string[]) => void;
   autocomplete?: (query: string, size: number) => Promise<string[]>;
 }> = ({ tags, isLoading, updateTags, autocomplete }) => {
-  if (!tags) return null;
   return (
     <div className="tags">
       {updateTags && autocomplete ? (
