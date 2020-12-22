@@ -1,20 +1,30 @@
 {          
     "properties": {
+        "search": {
+            "type": "text",
+            "analyzer": "rebuilt_danish",
+            "term_vector": "with_positions_offsets",
+            "store": true
+        },
         "text_segment_id": {
-            "type": "keyword"
+            "type": "keyword",
+            "copy_to": "search"
         },
         "document_id": {
-            "type": "keyword"
+            "type": "keyword",
+            "copy_to": "search"
         },
         "text_question": {
             "type": "text",
             "analyzer": "rebuilt_danish",
-            "term_vector": "with_positions_offsets"
+            "term_vector": "with_positions_offsets",
+            "copy_to": "search"
         },
         "text_answer": {
             "type": "text",
             "analyzer": "rebuilt_danish",
-            "term_vector": "with_positions_offsets"
+            "term_vector": "with_positions_offsets",
+            "copy_to": "search"
         },
         "user_tags": {
             "type": "keyword"

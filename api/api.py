@@ -20,7 +20,7 @@ def search(method='GET'):
     if dates:
         date_min, date_max = dates.split('|')
     # demultiplex filters
-    filters = [(field,v) for field, value in request.args.items() for v in value.split('|') if field not in ["query", "size", "offset", "date"]]
+    filters = {field: value.split('|') for field, value in request.args.items() if field not in ["query", "size", "offset", "date"]}
 
     es = Elasticsearch('%s:%s'%(ELASTICSEARCH_HOST, ELASTICSEARCH_PORT))
     search = {
@@ -29,25 +29,26 @@ def search(method='GET'):
         "track_total_hits": True,
         "query": {
             "bool": {
-                "must": {
+                "must": [{
                     "query_string":  {
                         "query": query ,
-                        "fields": ["text_answer","text_question"]
+                        "fields": ["search"]
                     }
-                }
+                }]
             }
         },
         "highlight": {
             "fields": {
-                "text_answer": {},
-                "text_question": {}
+                "search": {}
             }
         }
     }
     # filters in ES
-    if len(filters)>0:
-        search["query"]["bool"]["should"] = [{"term": {f: v}} for f,v in filters]
-        search["query"]["bool"]["minimum_should_match"] = 1
+    # mutivalue => should
+    # AND between filters
+    for f,values in filters.items():
+        filter_must = {"bool":{"should": [{"term": {f: v}} for v in values], "minimum_should_match":1, "boost":2}}
+        search["query"]["bool"]["must"].append(filter_must)
     # date in ES
     if dates:
         search["query"]["bool"]["filter"]= [{"range": {"date_i_o_me": {}}}]
@@ -55,14 +56,12 @@ def search(method='GET'):
             search["query"]["bool"]["filter"][0]["range"]["date_i_o_me"]["lte"] = date_max
         if date_min:
             search["query"]["bool"]["filter"][0]["range"]["date_i_o_me"]["gte"] = date_min
- 
+    print(search)
     results = es.search(search, index="text_segments")
+    print(results)
     return {
         "total": results['hits']['total']['value'],
-        "results": [ dict(segment_light(s['_source']), **{"highlights": {
-                "question": s['highlight']['text_question'] if 'highlight' in s and 'text_question' in s['highlight'] else [],
-                "answer": s['highlight']['text_answer'] if 'highlight' in s and 'text_answer' in s['highlight'] else []
-            }})
+        "results": [ dict(segment_light(s['_source']), **{"highlights": s['highlight']['search'] if 'highlight' in s and 'search' in s['highlight'] else []})
             for s in results['hits']['hits']]
     } 
      
