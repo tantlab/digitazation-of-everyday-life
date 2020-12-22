@@ -193,7 +193,13 @@ const Filters: FC<{
         }}
       >
         <i className="fas fa-filter" />{" "}
-        {showFilters ? "Hide filters" : "Show filters"}
+        {showFilters
+          ? "Hide filters"
+          : `Show filters ${
+              Object.keys(filtersState).length > 0
+                ? `(${Object.keys(filtersState).length})`
+                : ""
+            }`}
       </button>
 
       {showFilters && (
