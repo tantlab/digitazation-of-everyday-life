@@ -153,7 +153,8 @@ if __name__ == '__main__':
 
         # documents
         def cast_doc(d):
-            return dict(d, **{'document_tags_i': ast.literal_eval(d['document_tags_i'] if d['document_tags_i'] !='' else "[]")})
+            d['document_tags_i'] = ast.literal_eval(d['document_tags_i'] if d['document_tags_i'] !='' else "[]")
+            return d
         index_result, _ = helpers.bulk(es, ({
             "_op_type": "update",
             "doc_as_upsert": True,
