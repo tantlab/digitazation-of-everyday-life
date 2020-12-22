@@ -55,11 +55,16 @@ export async function getSimilarFragments(
   return result;
 }
 
-export function setFragmentTags(
+export async function setFragmentTags(
   fragmentId: string,
   tags: string[]
 ): Promise<Fragment> {
-  throw new Error("TODO");
+  const response = fetch(`${config.api_url}/fragment/${fragmentId}`, {
+    method: "POST",
+    body: { tags },
+  });
+  const result = await response.json();
+  return result;
 }
 
 export async function autocomplete(
