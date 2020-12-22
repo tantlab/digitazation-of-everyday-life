@@ -63,7 +63,7 @@ export async function setFragmentTags(
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ tags }),
+    body: JSON.stringify({ user_tags: tags }),
   });
   const result = await response.json();
   return result;
