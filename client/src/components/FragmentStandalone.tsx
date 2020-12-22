@@ -22,7 +22,9 @@ const Fragment: FC<{ fragment: FragmentLight; showTags?: boolean }> = ({
       </p>
       <p className="content answer">{fragment.answer}</p>
     </Link>
-    {showTags && <TagsList tags={fragment.machineTags} />}
+    {showTags && fragment.machineTags && (
+      <TagsList tags={fragment.machineTags} />
+    )}
     <h5>
       From <Link to={getFragmentURL(fragment.docId)}>Doc {fragment.docId}</Link>{" "}
       | <TypeLabel type={fragment.type} />
