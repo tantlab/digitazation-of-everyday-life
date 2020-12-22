@@ -60,5 +60,5 @@ export interface FragmentLight {
   machineTags: string[];
   question: string;
   answer: string;
-  highlights: { answer: string[]; question: string[] };
+  highlights: string[];
 }
