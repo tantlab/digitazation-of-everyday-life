@@ -80,8 +80,11 @@ const Fragment: FC<{
 
   return (
     <div className={cx("fragment", isActive && "active")} data-id={fragment.id}>
-      <p className="content" onClick={focusFragment}>
-        {fragment.text}
+      <p className="content question" onClick={focusFragment}>
+        {fragment.question}
+      </p>
+      <p className="content answer" onClick={focusFragment}>
+        {fragment.answer}
       </p>
 
       <span className="fingerprint">
@@ -303,17 +306,19 @@ const Doc: FC = () => {
               </span>
             </h1>
 
-            <div>
-              <h4 className="inline">Date</h4>{" "}
-              <span>
-                {doc.date.toLocaleDateString("en-US", {
-                  weekday: "long",
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </span>
-            </div>
+            {doc.date && (
+              <div>
+                <h4 className="inline">Date</h4>{" "}
+                <span>
+                  {doc.date.toLocaleDateString("en-US", {
+                    weekday: "long",
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </span>
+              </div>
+            )}
 
             {toPairs(doc.metadata)
               .filter(([, value]) => value)

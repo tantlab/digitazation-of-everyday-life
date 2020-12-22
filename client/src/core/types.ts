@@ -32,16 +32,15 @@ export interface Doc {
   type: DataType;
   tags: string[];
   fragments: Fragment[];
-  date: Date;
+  date?: Date;
   metadata: { [field: string]: string };
   similarDocIDs: string[];
 }
-// refacto Paul API
-// there are no date on doc. We could imply one from segments... ?
 
 export interface Fragment {
   id: string;
-  text: string;
+  answer: string;
+  question: string;
   images?: string[];
   userTags: string[];
   machineTags: string[];
@@ -52,7 +51,6 @@ export interface Fragment {
   docMetadata: { [field: string]: string };
 }
 // Paul refacto from API
-// text have to be splitted into question and answer fields
 // docMetadata is not used, we should remove it
 
 export interface FragmentLight {
