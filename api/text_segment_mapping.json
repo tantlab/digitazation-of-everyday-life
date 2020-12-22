@@ -23,12 +23,10 @@
             "type": "keyword"
         },
         "tfidf_tag": {
-            "type": "keyword",
-            "copy_to": "machine_tags"
+            "type": "keyword"
         },
         "ner_tag": {
-            "type": "keyword",
-            "copy_to": "machine_tags"
+            "type": "keyword"
         },
         "text_segment_similarity_id": {
             "type": "keyword"

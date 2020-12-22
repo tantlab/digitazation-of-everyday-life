@@ -93,14 +93,18 @@ if __name__ == '__main__':
                     # segment metadata management
                     del(next_segment[''])
                     # lists
+                    machine_tags = []
                     if next_segment['tfidf_tag'] == '':
                         next_segment['tfidf_tag'] = [] 
                     else:
                         next_segment['tfidf_tag'] = ast.literal_eval(next_segment['tfidf_tag'])
+                        machine_tags += next_segment['tfidf_tag']
                     if next_segment['ner_tag'] == '':
                         next_segment['ner_tag'] = []
                     else:
                         next_segment['ner_tag'] = ast.literal_eval(next_segment['ner_tag'])
+                        machine_tags += next_segment['ner_tag']
+                    next_segment['machine_tags'] = machine_tags
                     # force image into list
                     
                     if next_segment['image_o_me'] != "" and next_segment['image_o_me'][0] == '[':
