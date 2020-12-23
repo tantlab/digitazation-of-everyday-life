@@ -164,4 +164,20 @@ if __name__ == '__main__':
             index='documents')
         if index_result > 0:
             print("%s documents inserted"%(index_result))
-        
+
+        # user tags
+        if os.path.exists("./data/csv/user_tags.csv"):
+            with open("./data/csv/user_tags.csv", "r", encoding="utf8") as tags_f:
+                tags_csv = csv.DictReader(tags_f)
+                tags_updates = {}
+                for seg_tags in tags_csv:
+                    # if the same segment is listed twice we take the last one only
+                    tags_updates[seg_tags['text_segment_id']] = {"user_tags": ast.literal_eval(seg_tags["user_tags"])}
+                index_result, _ = helpers.bulk(es, ({
+                    "_op_type": "update",
+                    "_id": seg_id,
+                    'doc': d}
+                        for seg_id,d in tags_updates.items()),
+                    index='text_segments')
+                if index_result > 0:
+                    print("tags inserted in %s segments"%(index_result))
