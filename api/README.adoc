@@ -4,9 +4,9 @@
 
 To index the data into elasticsearch, you have to call the python script `index_data_in_ES.py`.
 
-This is the command for docker : `docker exec -it api_1  bash -c "cd /api && python index_data_in_ES.py"`
+This is the command for docker : `docker exec -it docker_api_1  bash -c "cd /api && python index_data_in_ES.py"`
 
-NOTE: this command works if the container API is named `api_1` (default value)
+NOTE: this command works if the API container  name is `docker_api_1` (default value)
 
 == GET /doc/{document_id}
 
@@ -25,12 +25,13 @@ Doc
 
 === response
 
-```TypeScript
+[source,typescript]
+----
 {
     total:  number              // number of total results}
     results: FragmentLight[]    // list of result in page
 }
-```
+----
 
 == GET /autocomplete
 
@@ -42,29 +43,31 @@ Doc
 
 === response
 
-```TypeScript
+[source,typescript]
+----
 string[]
-```
+----
 
 
 == GET /similarSegments/text_segment_id:string
 
 === response
 
-```TypeScript
+[source,typescript]
+----
 FragmentLight[]    // list of similar fragments
-
-```
+----
 
 == POST /fragment/text_segment_id:string
 
 === body
 
-```json
+[source,json]
+----
 {
     "user_tags":["tag 1", "tag 2"]
 }
-```
+----
 
 Other fields than user_tags will be ignored for security reasons.
 
