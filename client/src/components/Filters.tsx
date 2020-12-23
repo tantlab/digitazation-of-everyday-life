@@ -168,6 +168,23 @@ const TermsFilter: FC<{
   );
 };
 
+// Compute the suffix part for the label of the hide.shiw filter
+function displayFilterButtonSuffix(
+  init: FiltersState,
+  current: FiltersState
+): string {
+  let suffix = "";
+  if (Object.keys(current).length > 0) {
+    const filtersCount = Object.keys(current).length;
+    if (JSON.stringify(init) !== JSON.stringify(current)) {
+      suffix = `(${filtersCount}*)`;
+    } else {
+      suffix = `(${filtersCount}*)`;
+    }
+  }
+  return suffix;
+}
+
 const Filters: FC<{
   defs: FilterDef[];
   state: FiltersState;
@@ -189,17 +206,12 @@ const Filters: FC<{
         type="button"
         onClick={() => {
           setShowFilters(!showFilters);
-          setFiltersState(state);
         }}
       >
         <i className="fas fa-filter" />{" "}
         {showFilters
           ? "Hide filters"
-          : `Show filters ${
-              Object.keys(filtersState).length > 0
-                ? `(${Object.keys(filtersState).length})`
-                : ""
-            }`}
+          : `Show filters ${displayFilterButtonSuffix(state, filtersState)}`}
       </button>
 
       {showFilters && (
