@@ -202,11 +202,13 @@ const Fragment: FC<{
 const Doc: FC = () => {
   const location = useLocation();
   const history = useHistory();
-  const { docId } = useParams<{ docId: string }>();
+  const params = useParams<{ docId: string }>();
+  const docId = decodeURIComponent(params.docId);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [doc, setDoc] = useState<DocType | null>(null);
-  const highlightedFragmentId = getFragmentID(location);
+  const highlightedFragmentId =
+    decodeURIComponent(getFragmentID(location) || "") || null;
 
   const fragmentsContainer = useRef<HTMLDivElement>(null);
 
