@@ -269,6 +269,13 @@ const Filters: FC<{
           </div>
 
           <div className="buttons">
+            <button
+              type="button"
+              disabled={isEqual(state, {})}
+              onClick={() => onSubmit({})}
+            >
+              Reset
+            </button>
             <button type="reset" disabled={isEqual(state, filtersState)}>
               Cancel
             </button>
