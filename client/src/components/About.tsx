@@ -33,10 +33,10 @@ const About: FC = () => (
       <h1>The Digitization of Everyday Life During the Corona Crisis</h1>
 
       <h4>
-        Download all tags here:{" "}
+        Download all user tags here:{" "}
         <a
           href={`${config.api_url}/user_tags.csv`}
-          title="Download the CSV file of tags"
+          title="Download the CSV file of user tags"
           target="_blank"
         >
           <i className="fas fa-download" /> tags.csv

@@ -132,10 +132,12 @@ const Fragment: FC<{
                             <div className="caption">
                               <a
                                 href={`${config.assets_url}/${url}`}
-                                title={`Download ${url.match(/[^/]*$/)}`}
+                                title={`Open ${url.match(
+                                  /[^/]*$/
+                                )} in a new tab`}
                                 target="_blank"
                               >
-                                <i className="fas fa-link" /> Download
+                                <i className="fas fa-3x fa-external-link-alt" />
                               </a>
                             </div>
                           </div>

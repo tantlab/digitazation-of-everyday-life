@@ -39,6 +39,8 @@ export default {
     job_i_me: "Job",
     residence_i_me: "Residence",
     analytic_note_i_o: "Analytic note",
+    duration_observed_o: "Duration observed",
+    media_o: "Media",
   } as Record<string, string>,
 
   filters: [
@@ -69,6 +71,21 @@ export default {
     {
       label: "Informant job",
       field: "job_i_me",
+      type: "terms",
+    },
+    {
+      label: "Housemates",
+      field: "housemates_i_me",
+      type: "terms",
+    },
+    {
+      label: "Age",
+      field: "age_i_me",
+      type: "terms",
+    },
+    {
+      label: "City",
+      field: "residence_i_me",
       type: "terms",
     },
   ] as FilterDef[],
