@@ -315,33 +315,37 @@ const Doc: FC = () => {
               </span>
             </h1>
 
-            {doc.date && (
-              <div>
-                <h4 className="inline">Date</h4>{" "}
-                <span>
-                  {doc.date.toLocaleDateString("en-US", {
-                    weekday: "long",
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
-                </span>
+            <div className="metadata-wrapper">
+              <div className="metadata">
+                {doc.date && (
+                  <div>
+                    <h4 className="inline">Date</h4>{" "}
+                    <span>
+                      {doc.date.toLocaleDateString("en-US", {
+                        weekday: "long",
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </span>
+                  </div>
+                )}
+
+                {toPairs(doc.metadata)
+                  .filter(([, value]) => value)
+                  .map(([key, value]: [string, string]) => (
+                    <div key={key}>
+                      <h4 className="inline">
+                        {config.docMetadataLabels[key] || key}
+                      </h4>{" "}
+                      <span>{value}</span>
+                    </div>
+                  ))}
+
+                <h4>Tags</h4>
+                <TagsList tags={doc.tags} />
               </div>
-            )}
-
-            {toPairs(doc.metadata)
-              .filter(([, value]) => value)
-              .map(([key, value]: [string, string]) => (
-                <div key={key}>
-                  <h4 className="inline">
-                    {config.docMetadataLabels[key] || key}
-                  </h4>{" "}
-                  <span>{value}</span>
-                </div>
-              ))}
-
-            <h4>Tags</h4>
-            <TagsList tags={doc.tags} />
+            </div>
 
             {!!doc.similarDocIDs.length && (
               <>

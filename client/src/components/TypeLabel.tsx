@@ -7,7 +7,8 @@ const TypeLabel: FC<{ type: DataType }> = ({ type }) => {
   const { color, icon, label } = config.dataTypes[type];
   return (
     <span className="type-label" style={{ color }}>
-      <i className={icon} /> {label}
+      <i className={icon} />
+      &nbsp;{label}
     </span>
   );
 };
