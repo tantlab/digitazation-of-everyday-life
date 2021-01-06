@@ -7,3 +7,48 @@ include::./api/README.adoc[leveloffset=+1]
 include::./data/README.adoc[leveloffset=+1]
 
 include::./docker/README.adoc[leveloffset=+1]
+
+== How to do a re-import
+
+1. Download the `user_tag.csv` from the about page or by curl :
+
+[source, bash]
+----
+$> curl http://localhost/api/user_tags.csv
+----
+
+2. Stop the stack
+
+[source, bash]
+----
+$> cd $PROJECT_HOME/docker
+$> docker-compose stop
+----
+
+3. Copy the new CSV files and images that you want to import in the folder `./data`
+
+4. Copy the `user_tag.csv` file in the `./data/csv` folder
+
+5. Delete the ES data
+
+[source, bash]
+----
+$> cd $PROJECT_HOME/docker/elasticseach/data
+$> rm -rf *
+----
+
+6. Restart the stack
+
+[source, bash]
+----
+$> cd $PROJECT_HOME/docker
+$> docker-compose start
+----
+
+7. Index the data in Elasticsearch
+
+[source, bash]
+----
+$> cd $PROJECT_HOME/
+$> docker exec -it docker_api_1  bash -c "cd /api && python index_data_in_ES.py"
+----
