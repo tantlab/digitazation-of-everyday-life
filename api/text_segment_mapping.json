@@ -44,7 +44,7 @@
         "order": {
             "type": "short"
         },
-        "image_o_me":{
+        "images_me_o":{
             "type": "keyword"
         },
         "date_i_o_me":{
