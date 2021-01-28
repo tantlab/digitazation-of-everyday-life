@@ -18,6 +18,10 @@
       display: flex;
       flex-direction: column;
       align-items: baseline;
+
+      & > div {
+        margin-bottom: 1em;
+      }
     }
     .tags {
       position: relative;
