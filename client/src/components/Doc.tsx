@@ -43,7 +43,6 @@ const Fragment: FC<{
   useEffect(() => {
     if (isActive && !similarFragments && !isLoadingSimilars) {
       setIsLoadingSimilars(true);
-
       getSimilarFragments(fragment.id).then((similarFragments) => {
         setSimilarFragments(similarFragments);
         setIsLoadingSimilars(false);
@@ -355,7 +354,12 @@ const Doc: FC = () => {
               <>
                 <h4>Docs from the same informant</h4>
                 <ul className="unstyled">
-                  {doc.similarDocIDs.map((docID) => (
+                  {(!isArray(doc.similarDocIDs)
+                    ? doc.similarDocIDs
+                      ? [doc.similarDocIDs]
+                      : []
+                    : doc.similarDocIDs
+                  ).map((docID) => (
                     <li key={docID}>
                       <h5>
                         <Link
