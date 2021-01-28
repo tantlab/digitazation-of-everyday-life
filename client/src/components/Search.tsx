@@ -185,8 +185,8 @@ const Search: FC = () => {
                   <Loader
                     message={
                       searchResult
-                        ? "Searching for matching text fragments"
-                        : "Searching for more matching text fragments"
+                        ? "Searching for matching text segments"
+                        : "Searching for more matching text segments"
                     }
                   />
                 </span>
