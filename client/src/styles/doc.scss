@@ -147,6 +147,13 @@
     }
   }
 
+  .similar-fragment {
+    .fragment-standalone .content span .question,
+    .fragment-standalone .content span .answer {
+      font-weight: normal;
+    }
+  }
+
   button[data-action="deploy"] {
     margin-top: 0.7em;
     @extend .typo-title;
