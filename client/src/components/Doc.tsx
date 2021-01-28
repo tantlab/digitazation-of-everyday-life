@@ -407,7 +407,7 @@ const Doc: FC = () => {
         )}
         {!highlightedFragmentId && (
           <div className="side-panel-placeholder">
-            <span>(scroll down or click on a text fragment)</span>
+            <span>(scroll down or click on a text segment)</span>
           </div>
         )}
         {isLoading && <LoaderOverlay message="Loading document" />}
