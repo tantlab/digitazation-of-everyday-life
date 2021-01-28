@@ -97,45 +97,49 @@
     margin-top: -3em;
   }
 
-  .images {
-    display: flex;
-    justify-content: center;
-    overflow-x: auto;
-    overflow-y: hidden;
+  .images-wrapper {
+    overflow-x: scroll;
 
-    .image {
-      position: relative;
-      display: inline-block;
-      height: 200px;
+    .images {
+      display: inline-flex;
+      justify-content: center;
+      overflow-x: auto;
+      overflow-y: hidden;
 
-      img {
-        height: 100%;
-      }
+      .image {
+        position: relative;
+        display: inline-block;
+        height: 200px;
 
-      .caption {
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        position: absolute;
+        img {
+          height: 100%;
+        }
 
-        @extend .center-flex;
+        .caption {
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          position: absolute;
 
-        background: #00000099;
-        a {
-          color: white;
-          &:hover {
-            color: $mainOrange;
+          @extend .center-flex;
+
+          background: #00000099;
+          a {
+            color: white;
+            &:hover {
+              color: $mainOrange;
+            }
           }
         }
-      }
 
-      &:not(:hover) .caption {
-        display: none;
+        &:not(:hover) .caption {
+          display: none;
+        }
       }
-    }
-    .image:not(:last-child) {
-      margin-right: 1em;
+      .image:not(:last-child) {
+        margin-right: 1em;
+      }
     }
   }
 

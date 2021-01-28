@@ -122,25 +122,27 @@ const Fragment: FC<{
                   .length && (
                   <>
                     <h4>Images</h4>
-                    <div className="images">
-                      {fragment.images
-                        .filter((url) => url !== "Y" && url !== "N")
-                        .map((url) => (
-                          <div className="image" key={url}>
-                            <img src={`${config.assets_url}/${url}`} alt="" />
-                            <div className="caption">
-                              <a
-                                href={`${config.assets_url}/${url}`}
-                                title={`Open ${url.match(
-                                  /[^/]*$/
-                                )} in a new tab`}
-                                target="_blank"
-                              >
-                                <i className="fas fa-3x fa-external-link-alt" />
-                              </a>
+                    <div className="images-wrapper">
+                      <div className="images">
+                        {fragment.images
+                          .filter((url) => url !== "Y" && url !== "N")
+                          .map((url) => (
+                            <div className="image" key={url}>
+                              <img src={`${config.assets_url}/${url}`} alt="" />
+                              <div className="caption">
+                                <a
+                                  href={`${config.assets_url}/${url}`}
+                                  title={`Open ${url.match(
+                                    /[^/]*$/
+                                  )} in a new tab`}
+                                  target="_blank"
+                                >
+                                  <i className="fas fa-3x fa-external-link-alt" />
+                                </a>
+                              </div>
                             </div>
-                          </div>
-                        ))}
+                          ))}
+                      </div>
                     </div>
                     <br />
                     <hr />
