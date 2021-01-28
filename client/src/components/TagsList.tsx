@@ -44,22 +44,24 @@ const TagsList: FC<{
         />
       ) : tags && tags.length ? (
         <p>
-          {tags.map((tag, i) => (
-            <span key={i} className="tag">
-              {tag}
-              {updateTags && (
-                <>
-                  {" "}
-                  <button
-                    className="unstyled"
-                    onClick={() => updateTags(tags.filter((s) => s !== tag))}
-                  >
-                    <i className="fas fa-times" />
-                  </button>
-                </>
-              )}
-            </span>
-          ))}
+          {tags
+            .filter((e) => e !== "")
+            .map((tag, i) => (
+              <span key={i} className="tag">
+                {tag}
+                {updateTags && (
+                  <>
+                    {" "}
+                    <button
+                      className="unstyled"
+                      onClick={() => updateTags(tags.filter((s) => s !== tag))}
+                    >
+                      <i className="fas fa-times" />
+                    </button>
+                  </>
+                )}
+              </span>
+            ))}
         </p>
       ) : (
         <p className="no-tag">No tag</p>
