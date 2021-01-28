@@ -78,8 +78,8 @@ export default {
       type: "terms",
     },
     {
-      label: "Informant job",
-      field: "job_i_me",
+      label: "Job category",
+      field: "job_category_i_me",
       type: "terms",
     },
     {
@@ -93,8 +93,8 @@ export default {
       type: "terms",
     },
     {
-      label: "City",
-      field: "residence_i_me",
+      label: "Region",
+      field: "residence_region_i_me",
       type: "terms",
     },
   ] as FilterDef[],

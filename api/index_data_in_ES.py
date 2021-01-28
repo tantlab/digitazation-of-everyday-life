@@ -9,8 +9,8 @@ import os
 from config import ELASTICSEARCH_HOST, ELASTICSEARCH_PORT
 DELETE_INDEX = True
 
-DOC_FIELDS_INTO_SEGMENTS = ['protocol_type_i_o_me', 'job_i_me',
-                            'age_i_me', 'residence_i_me', 'housemates_i_me', 'platform_o', ]
+DOC_FIELDS_INTO_SEGMENTS = ['protocol_type_i_o_me', 'job_i_me', 'job_category_i_me',
+                            'age_i_me', 'residence_i_me', 'residence_region_i_me', 'housemates_i_me', 'platform_o', ]
 
 
 if __name__ == '__main__':

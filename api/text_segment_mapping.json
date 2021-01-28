@@ -1,73 +1,79 @@
-{          
-    "properties": {
-        "search": {
-            "type": "text",
-            "analyzer": "rebuilt_danish",
-            "term_vector": "with_positions_offsets",
-            "store": true
-        },
-        "text_segment_id": {
-            "type": "keyword",
-            "copy_to": "search"
-        },
-        "document_id": {
-            "type": "keyword",
-            "copy_to": "search"
-        },
-        "text_question": {
-            "type": "text",
-            "analyzer": "rebuilt_danish",
-            "term_vector": "with_positions_offsets",
-            "copy_to": "search"
-        },
-        "text_answer": {
-            "type": "text",
-            "analyzer": "rebuilt_danish",
-            "term_vector": "with_positions_offsets",
-            "copy_to": "search"
-        },
-        "user_tags": {
-            "type": "keyword"
-        },
-        "machine_tags": {
-            "type": "keyword"
-        },
-        "tfidf_tag": {
-            "type": "keyword"
-        },
-        "ner_tag": {
-            "type": "keyword"
-        },
-        "text_segment_similarity_id": {
-            "type": "keyword"
-        },
-        "order": {
-            "type": "short"
-        },
-        "images_me_o":{
-            "type": "keyword"
-        },
-        "date_i_o_me":{
-            "type": "date",
-            "format": "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd" 
-        },
-        "protocol_type_i_o_me": {
-            "type": "keyword"
-        },
-        "job_i_me": {
-            "type": "keyword"
-        },
-        "age_i_me" : {
-            "type": "keyword"
-        },
-        "residence_i_me" : {
-            "type": "keyword"
-        },
-        "housemates_i_me" : {
-            "type": "keyword"
-        },
-        "platform_o" : {
-            "type": "keyword"
-        }
+{
+  "properties": {
+    "search": {
+      "type": "text",
+      "analyzer": "rebuilt_danish",
+      "term_vector": "with_positions_offsets",
+      "store": true
+    },
+    "text_segment_id": {
+      "type": "keyword",
+      "copy_to": "search"
+    },
+    "document_id": {
+      "type": "keyword",
+      "copy_to": "search"
+    },
+    "text_question": {
+      "type": "text",
+      "analyzer": "rebuilt_danish",
+      "term_vector": "with_positions_offsets",
+      "copy_to": "search"
+    },
+    "text_answer": {
+      "type": "text",
+      "analyzer": "rebuilt_danish",
+      "term_vector": "with_positions_offsets",
+      "copy_to": "search"
+    },
+    "user_tags": {
+      "type": "keyword"
+    },
+    "machine_tags": {
+      "type": "keyword"
+    },
+    "tfidf_tag": {
+      "type": "keyword"
+    },
+    "ner_tag": {
+      "type": "keyword"
+    },
+    "text_segment_similarity_id": {
+      "type": "keyword"
+    },
+    "order": {
+      "type": "short"
+    },
+    "images_me_o": {
+      "type": "keyword"
+    },
+    "date_i_o_me": {
+      "type": "date",
+      "format": "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd"
+    },
+    "protocol_type_i_o_me": {
+      "type": "keyword"
+    },
+    "job_i_me": {
+      "type": "keyword"
+    },
+    "job_category_i_me": {
+      "type": "keyword"
+    },
+    "age_i_me": {
+      "type": "keyword"
+    },
+    "residence_i_me": {
+      "type": "keyword"
+    },
+    "residence_region_i_me": {
+      "type": "keyword"
+    },
+    "housemates_i_me": {
+      "type": "keyword"
+    },
+    "platform_o": {
+      "type": "keyword"
     }
+  }
 }
