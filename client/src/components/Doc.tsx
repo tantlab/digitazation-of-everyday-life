@@ -381,7 +381,7 @@ const Doc: FC = () => {
             <br />
             <br />
 
-            <h2>Fragments</h2>
+            <h2>Segments</h2>
 
             <div ref={fragmentsContainer}>
               {doc.fragments.map((fragment) => (
