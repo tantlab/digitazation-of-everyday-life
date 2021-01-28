@@ -65,8 +65,8 @@ def search(method='GET'):
         "total": results['hits']['total']['value'],
         "results": [ dict(segment_light(s['_source']), **{"highlights": s['highlight']['search'] if 'highlight' in s and 'search' in s['highlight'] else []})
             for s in results['hits']['hits']]
-    } 
-     
+    }
+
 
 
 
@@ -79,8 +79,8 @@ def autocomplete(method='GET'):
     if not field:
         abort(404)
     terms = {
-                    "field":field, 
-                    "size": size, 
+                    "field":field,
+                    "size": size,
                     "missing": "N/A"
                 }
     if query:
@@ -92,18 +92,18 @@ def autocomplete(method='GET'):
         "track_total_hits": True,
         "aggs": {
             "suggestions": {
-                "terms": terms 
+                "terms": terms
             }
         }
     }
     results = es.search(search, index="text_segments")['aggregations']['suggestions']['buckets']
-   
-    return jsonify([r['key']  for r in results])
+    items = filter(lambda item: item != "", [r['key']  for r in results]);
+    return jsonify([ r for r in items])
 
 @app.route('/doc/<string:id>', methods= ['GET'])
 def doc(id):
     es = Elasticsearch('%s:%s'%(ELASTICSEARCH_HOST, ELASTICSEARCH_PORT))
-    try: 
+    try:
         doc = es.get('documents', id)['_source']
         # segments
         segment_search = {
@@ -111,7 +111,7 @@ def doc(id):
             "sort": {"order":"asc"},
             "track_total_hits": True,
             "query":{
-                "bool":{                
+                "bool":{
                     "filter": {
                     "term": {"document_id": id}
                 }}
@@ -125,7 +125,7 @@ def doc(id):
 @app.route('/similarSegments/<string:id>', methods= ['GET'])
 def similar_segments(id):
     es = Elasticsearch('%s:%s'%(ELASTICSEARCH_HOST, ELASTICSEARCH_PORT))
-    try: 
+    try:
         segment = es.get('text_segments', id)['_source']
         similar_ids = segment['text_segment_similarity_id']
         if similar_ids != "" and not isinstance(similar_ids,list):
@@ -143,7 +143,7 @@ def similar_segments(id):
 @app.route('/fragment/<string:id>', methods= ['POST'])
 def update_segment(id):
     es = Elasticsearch('%s:%s'%(ELASTICSEARCH_HOST, ELASTICSEARCH_PORT))
-    try: 
+    try:
         # restrict update to user_tags field
         body = request.get_json()
         if "user_tags" not in body:
@@ -158,7 +158,7 @@ def update_segment(id):
 @app.route('/user_tags.csv')
 def user_tags_csv(method='GET'):
     es = Elasticsearch('%s:%s'%(ELASTICSEARCH_HOST, ELASTICSEARCH_PORT))
-    
+
     segs = es.search({
         "size": 9999,
         "query":{
@@ -178,4 +178,3 @@ def user_tags_csv(method='GET'):
     writer.writeheader()
     writer.writerows(seg['_source'] for seg in segs['hits']['hits'])
     return Response(csvString.getvalue(), mimetype='text/csv')
-
