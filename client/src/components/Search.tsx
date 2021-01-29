@@ -1,5 +1,5 @@
 import React, { FC, useCallback, useEffect, useState } from "react";
-import { useHistory, useLocation } from "react-router-dom";
+import { Link, useHistory, useLocation } from "react-router-dom";
 import cx from "classnames";
 
 import {
@@ -14,8 +14,28 @@ import { Loader } from "./Loaders";
 import config from "../config";
 import Filters from "./Filters";
 import FragmentStandalone from "./FragmentStandalone";
+import Modal from "./Modal";
 
 const RESULTS_BATCH_SIZE = 50;
+
+const EXAMPLES = [
+  {
+    query: "*",
+    description: "all segments",
+  },
+  {
+    query: '"alene hjemme"',
+    description: 'all segments containing exactly "alene hjemme"',
+  },
+  {
+    query: "covid coronavirus",
+    description: 'all segments containing either "covid" or "coronavirus"',
+  },
+  {
+    query: "chef + arbejde",
+    description: 'all segments containing both "chef" and "arbejde"',
+  },
+];
 
 const SearchForm: FC<{
   initialQuery?: string;
@@ -23,6 +43,7 @@ const SearchForm: FC<{
 }> = (props) => {
   const history = useHistory();
   const [query, setQuery] = useState<string>(props.initialQuery || "");
+  const [showHelp, setShowHelp] = useState<boolean>(false);
 
   return (
     <>
@@ -31,7 +52,12 @@ const SearchForm: FC<{
         id="search-form"
         onSubmit={(e) => {
           e.preventDefault();
-          props.onSubmit(query);
+          if (!query) {
+            setQuery("*");
+            props.onSubmit("*");
+          } else {
+            props.onSubmit(query);
+          }
         }}
         onReset={() => {
           setQuery("");
@@ -43,13 +69,41 @@ const SearchForm: FC<{
           type="text"
           value={query || ""}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Type here your query"
+          placeholder={`Type here your query (Examples: ${EXAMPLES.map(
+            ({ query }) => query
+          ).join(", ")})`}
         />
         <button type="reset">Cancel</button>
-        <button type="submit" disabled={!query}>
-          Search
+        <button type="submit">Search</button>
+        <button
+          type="button"
+          title="Get queries examples"
+          onClick={() => setShowHelp(true)}
+        >
+          <i className="fas fa-question-circle" />
         </button>
       </form>
+      {showHelp && (
+        <Modal onClose={() => setShowHelp(false)}>
+          <h2>Exemples:</h2>
+          {EXAMPLES.map(({ query, description }) => (
+            <p key={query}>
+              <strong>
+                <Link
+                  to={getSearchURL(query)}
+                  onClick={() => {
+                    setQuery(query);
+                    setShowHelp(false);
+                  }}
+                >
+                  {query}
+                </Link>
+              </strong>{" "}
+              searches for {description}
+            </p>
+          ))}
+        </Modal>
+      )}
     </>
   );
 };
