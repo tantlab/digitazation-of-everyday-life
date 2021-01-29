@@ -44,39 +44,41 @@ const About: FC = () => (
       </h4>
 
       <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nec
-        consectetur odio. Phasellus tristique ante in dapibus sagittis. Ut
-        ultricies tortor eget velit volutpat tincidunt. Nulla facilisi. Ut
-        rutrum mauris ut elit finibus, et consequat lorem commodo. Suspendisse
-        potenti. Morbi finibus euismod venenatis. Nam pretium dui ante, ac
-        pretium odio luctus a. Donec congue eros non est ullamcorper, in
-        bibendum ipsum viverra. Morbi sed tristique mi. Ut dictum gravida tortor
-        at luctus. Cras dictum ullamcorper quam ac lacinia. Morbi fringilla leo
-        lacus, nec lacinia massa facilisis a. Vestibulum mollis, mi quis egestas
-        egestas, sem odio porta lacus, eget mollis sem turpis at erat.
-        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere
-        cubilia curae; Nullam et aliquet orci, id scelerisque erat.
+        This datascape allows you to enter and navigate an online ethnographic
+        archive. The archive contains material collected during the COVID-19
+        lockdown that took place between April and June, 2020 in Denmark. This
+        includes 222 interviews, 84 online diaries, and 89 field observations.
+        The material was collected as part of the project{" "}
+        <a href="https://deltagelsensgrammatik.itu.dk/om-projektet/">
+          "The Grammar of Participation: The Digitalization of Everyday Life
+          During the Corona Crisis"
+        </a>
+        . The project was carried out in collaboration between researchers at
+        the <a href="https://cdw.itu.dk">Centre for Digital Welfare</a> at the{" "}
+        <a href="https://www.itu.dk">IT University of Copenhagen</a> and the{" "}
+        <a href="https://www.tantlab.aau.dk">Techno-Anthropology Lab</a> at{" "}
+        <a href="https://www.aau.dk">University of Aalborg</a>.
       </p>
+
       <p>
-        Curabitur sollicitudin ligula sed eros dignissim tempor. In efficitur,
-        metus quis posuere feugiat, enim lorem sagittis enim, vitae vulputate
-        odio leo nec ante. Interdum et malesuada fames ac ante ipsum primis in
-        faucibus. Donec magna libero, tincidunt eget leo in, tincidunt euismod
-        neque. Vivamus sed augue mauris. Nulla volutpat sagittis purus, non
-        venenatis est iaculis ut. Cras sem sem, fermentum ut consequat in,
-        efficitur vel elit. Pellentesque habitant morbi tristique senectus et
-        netus et malesuada fames ac turpis egestas. Maecenas nec accumsan
-        sapien. Nullam scelerisque fringilla justo, vel laoreet turpis facilisis
-        a. Aliquam erat volutpat. Class aptent taciti sociosqu ad litora
-        torquent per conubia nostra, per inceptos himenaeos. Aliquam erat
-        volutpat. Ut aliquam lobortis pretium.
+        You can search the material of the archive across interviews,
+        observations and diaries, as well as explore similarities and
+        differences by browsing. To make the archive navigable, the materials
+        have been divided into text segments, pre-tagged and analyzed for
+        semantic similarities between segments. In this process we have used
+        natural language processing to detect mentions of technologies,
+        toponymies, places and other named entities as well as a Doc2Vec model
+        to measure similarity. These pre-tagged named entities are called
+        "machine generaged tags" and should be distinguished from the "user
+        generaged tags" that you can add to the archive as part of your search
+        and exploration.
       </p>
+
       <p>
-        Suspendisse nec sapien mauris. Duis at sollicitudin ante. Proin risus
-        nunc, tincidunt sit amet velit sit amet, sollicitudin fermentum augue.
-        Praesent velit dui, rutrum vitae porta a, condimentum in lectus. Aenean
-        efficitur risus vitae finibus blandit. Aliquam nec lectus in dolor porta
-        blandit. In tempus placerat varius.
+        Access to the datascape presumes that your research project has been
+        approved by the archive’s stewards: Brit Ross Winthereik (
+        <a href="mailto:brwi@itu.dk">brwi@itu.dk</a>) and Anders Kristian Munk (
+        <a href="mailto:anderskm@hum.aau.dk">anderskm@hum.aau.dk</a>).
       </p>
 
       <div className="partners">
