@@ -311,7 +311,10 @@ const Doc: FC = () => {
       <main className="container-large doc-page">
         {doc && (
           <div className="doc-container">
-            <h1>
+            <h1
+              className="ellipsis"
+              title={`${config.dataTypes[doc.type].label} | Doc ${doc.id}`}
+            >
               <span className="highlight">
                 <TypeLabel type={doc.type} /> | Doc {doc.id}
               </span>

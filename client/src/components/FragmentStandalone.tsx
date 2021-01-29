@@ -30,7 +30,7 @@ const Fragment: FC<{ fragment: FragmentLight; showTags?: boolean }> = ({
     {showTags && fragment.machineTags && (
       <TagsList tags={fragment.machineTags} />
     )}
-    <h5>
+    <h5 className="ellipsis">
       From{" "}
       <Link
         to={getFragmentURL(fragment.docId)}
