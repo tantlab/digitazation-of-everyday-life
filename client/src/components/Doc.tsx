@@ -77,6 +77,10 @@ const Fragment: FC<{
     }
   }, []);
 
+  const images = (fragment.images || []).filter(
+    (url) => url !== "Y" && url !== "N"
+  );
+
   return (
     <div className={cx("fragment", isActive && "active")} data-id={fragment.id}>
       <p className="content question" onClick={focusFragment}>
@@ -116,39 +120,32 @@ const Fragment: FC<{
               <i className="fas fa-times" />
             </button>
             <div className="wrapper-2">
-              {fragment.images &&
-                isArray(fragment.images) &&
-                !!fragment.images.filter((url) => url !== "Y" && url !== "N")
-                  .length && (
-                  <>
-                    <h4>Images</h4>
-                    <div className="images-wrapper">
-                      <div className="images">
-                        {fragment.images
-                          .filter((url) => url !== "Y" && url !== "N")
-                          .map((url) => (
-                            <div className="image" key={url}>
-                              <img src={`${config.assets_url}/${url}`} alt="" />
-                              <div className="caption">
-                                <a
-                                  href={`${config.assets_url}/${url}`}
-                                  title={`Open ${url.match(
-                                    /[^/]*$/
-                                  )} in a new tab`}
-                                  target="_blank"
-                                >
-                                  <i className="fas fa-3x fa-external-link-alt" />
-                                </a>
-                              </div>
-                            </div>
-                          ))}
-                      </div>
+              {images.length > 0 && (
+                <>
+                  <h4>Images ({images.length})</h4>
+                  <div className="images-wrapper">
+                    <div className="images">
+                      {images.map((url) => (
+                        <div className="image" key={url}>
+                          <img src={`${config.assets_url}/${url}`} alt="" />
+                          <div className="caption">
+                            <a
+                              href={`${config.assets_url}/${url}`}
+                              title={`Open ${url.match(/[^/]*$/)} in a new tab`}
+                              target="_blank"
+                            >
+                              <i className="fas fa-3x fa-external-link-alt" />
+                            </a>
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                    <br />
-                    <hr />
-                    <br />
-                  </>
-                )}
+                  </div>
+                  <br />
+                  <hr />
+                  <br />
+                </>
+              )}
               <h4>user generated Tags</h4>
               <TagsList
                 updateTags={setTags}
