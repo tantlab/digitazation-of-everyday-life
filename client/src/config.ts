@@ -37,7 +37,7 @@ export default {
     participant_i_o_me: "Participant",
     age_i_me: "Age",
     job_i_me: "Job",
-    job_category_i_me: "Job Cateory",
+    job_category_i_me: "Job Category",
     residence_i_me: "Residence",
     residence_region_i_me: "Region",
     analytic_note_i_o: "Analytic note",
@@ -51,6 +51,25 @@ export default {
     quotations_o: "Quotation",
     housemates_i_me: "Housemates",
   } as Record<string, string>,
+
+  docMetadataDisplay: [
+    "age_i_me",
+    "residence_i_me",
+    "residence_region_i_me",
+    "housemates_i_me",
+    "job_i_me",
+    "researcher_i_o",
+    "duration_observed_o",
+    "extra_o",
+    "job_category_i_me",
+    "media_o",
+    "notes_o",
+    "people_o",
+    "platform_o",
+    "quotations_o",
+    "tags",
+    "analytic_note_i_o",
+  ],
 
   filters: [
     {

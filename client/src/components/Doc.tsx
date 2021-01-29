@@ -333,19 +333,24 @@ const Doc: FC = () => {
                   </div>
                 )}
 
-                {toPairs(doc.metadata)
-                  .filter(([, value]) => value)
-                  .map(([key, value]: [string, string]) => (
-                    <div key={key}>
-                      <h4 className="inline">
-                        {config.docMetadataLabels[key] || key}
-                      </h4>{" "}
-                      <span>{value}</span>
-                    </div>
-                  ))}
-
-                <h4>Tags</h4>
-                <TagsList tags={doc.tags} />
+                {config.docMetadataDisplay.map((field) => {
+                  if (field === "tags")
+                    return (
+                      <div key={field}>
+                        <h4>Tags</h4>
+                        <TagsList tags={doc.tags || []} />
+                      </div>
+                    );
+                  if (doc.metadata[field])
+                    return (
+                      <div key={field}>
+                        <h4 className="inline">
+                          {config.docMetadataLabels[field] || field}
+                        </h4>{" "}
+                        <span>{doc.metadata[field]}</span>
+                      </div>
+                    );
+                })}
               </div>
             </div>
 
