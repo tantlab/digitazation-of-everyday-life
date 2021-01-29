@@ -146,9 +146,10 @@ const Fragment: FC<{
                   <br />
                 </>
               )}
-              <h4>user generated Tags</h4>
+              <h4 style={{ marginBottom: "0.2em" }}>User generated tags</h4>
               <TagsList
                 updateTags={setTags}
+                field="user_tags"
                 tags={fragment.userTags}
                 isLoading={isSettingTags}
                 autocomplete={(query, size) =>
@@ -159,7 +160,7 @@ const Fragment: FC<{
               <hr />
               <br />
               <h4>Machine generated Tags</h4>
-              <TagsList tags={fragment.machineTags} />
+              <TagsList tags={fragment.machineTags} field="machine_tags" />
               <br />
               <hr />
               <br />
@@ -341,7 +342,7 @@ const Doc: FC = () => {
                     return (
                       <div key={field}>
                         <h4>Tags</h4>
-                        <TagsList tags={doc.tags || []} />
+                        <TagsList tags={doc.tags} />
                       </div>
                     );
                   if (doc.metadata[field])
