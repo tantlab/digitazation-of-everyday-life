@@ -68,10 +68,41 @@ if __name__ == '__main__':
 
     with open('./data/csv/text_segment.csv', 'r', encoding='utf8') as segments_f, open('./data/csv/text_segment_metadata.csv', 'r', encoding='utf8') as segments_meta_f, open('./data/csv/document_metadata.csv', 'r', encoding='utf8') as docs_meta_f:
         # hashmap of segments
-        segments_content = {s["text_segment_id"]
-            : s for s in csv.DictReader(segments_f)}
+        segments_content = {s["text_segment_id"]: s for s in csv.DictReader(segments_f)}
         # hashmap of docs
         docs = {s["document_id"]: s for s in csv.DictReader(docs_meta_f)}
+
+        def blur_text(t):
+            import string
+            import re
+            import random
+            letters = string.ascii_lowercase
+            return re.sub("\w", lambda _: letters[random.randrange(26)], t)
+
+        blur_result_cache = {}
+
+        def blur_and_cache_text(t):
+            if t not in blur_result_cache:
+                blur_result_cache[t] = blur_text(t)
+            return blur_result_cache[t]
+
+        def cast_doc(d):
+            fields_to_blur = ['text_answer', "quotations_o",
+                              "job_i_me", 'analytic_note_i_o', 'people_o', 'notes_o']
+            for f in fields_to_blur:
+                if f in d:
+                    d[f] = blur_text(d[f])
+            fields_to_blur_consistently = [
+                'participant_i_o_me', 'researcher_i_o', 'document_id', 'text_segment_id', 'text_segment_similarity_id']
+            for f in fields_to_blur_consistently:
+                if f in d:
+                    if isinstance(d[f], list):
+                        d[f] = [blur_and_cache_text(e) for e in d[f]]
+                    else:
+                        d[f] = blur_and_cache_text(d[f])
+            if 'document_tags_i' in d:
+                d['document_tags_i'] = d['document_tags_i'].split(', ')
+            return d
 
         segment_meta_CSV = csv.DictReader(segments_meta_f)
         all_segments = list(segment_meta_CSV)
@@ -152,8 +183,8 @@ if __name__ == '__main__':
         index_result, _ = helpers.bulk(es, ({
             "_op_type": "update",
             "doc_as_upsert": True,
-            "_id": s['text_segment_id'],
-            'doc': s}
+            "_id": blur_and_cache_text(s['text_segment_id']),
+            'doc': cast_doc(s)}
             for s in all_segments),
             index='text_segments')
         if index_result > 0:
@@ -161,13 +192,10 @@ if __name__ == '__main__':
 
         # documents
 
-        def cast_doc(d):
-            d['document_tags_i'] = d['document_tags_i'].split(', ')
-            return d
         index_result, _ = helpers.bulk(es, ({
             "_op_type": "update",
             "doc_as_upsert": True,
-            "_id": doc_id,
+            "_id": blur_and_cache_text(doc_id),
             'doc': cast_doc(d)}
             for doc_id, d in docs.items()),
             index='documents')
