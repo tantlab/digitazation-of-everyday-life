@@ -1,4 +1,4 @@
-The Digitization of Everyday Life Datascape © 2020 by Anders Kristian Munk, Brit Ross Winthereik, Anders Grundtvig, Paul Girard, Alexis Jacomy, Benoit Simard is a tool that allows you to navigate and tag large volumes of qualitative data.
+The Digitization of Everyday Life Datascape © 2020 by Anders Kristian Munk, Brit Ross Winthereik, Anders Grundtvig, Paul Girard, Alexis Jacomy, and Benoit Simard is a tool that allows you to navigate and tag large volumes of qualitative data.
 
 This tool is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
