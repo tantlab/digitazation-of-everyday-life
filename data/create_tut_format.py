@@ -20,8 +20,8 @@ segment_columns = OrderedDict(
         "order": "indexInDocument",
         "images_me_o": "media_ids",
         # extra fields
-        "machine_tags": "machine_tags:string[]",
-        "text_segment_similarity_id": "text_segment_similarity_id:string[]",
+        "machine_tags": "machine_tags:text[]",
+        "text_segment_similarity_id": "text_segment_similarity_id:text[]",
         "date_i_o_me": "date_i_o_me:date",
         # to remove
         "tfidf_tag": None,
@@ -38,23 +38,23 @@ document_columns = OrderedDict(
         "document_id": "id",
         "protocol_type_i_o_me": "collection_id",
         # extra fields
-        "participant_i_o_me": "participant_i_o_me:string",
-        "job_i_me": "job_i_me:string",
-        "job_category_i_me": "job_category_i_me:string",
-        "age_i_me": "age_i_me:string",
-        "residence_i_me": "residence_i_me:string",
-        "residence_region_i_me": "residence_region_i_me:string",
-        "housemates_i_me": "housemates_i_me:string",
-        "document_tags_i": "tags:string[]",
-        "researcher_i_o": "researcher_i_o:string",
+        "participant_i_o_me": "participant_i_o_me:text",
+        "job_i_me": "job_i_me:text",
+        "job_category_i_me": "job_category_i_me:text",
+        "age_i_me": "age_i_me:text",
+        "residence_i_me": "residence_i_me:text",
+        "residence_region_i_me": "residence_region_i_me:text",
+        "housemates_i_me": "housemates_i_me:text",
+        "document_tags_i": "tags:text[]",
+        "researcher_i_o": "researcher_i_o:text",
         "analytic_note_i_o": "analytic_note_i_o:content",
         # should be time/duration
-        "platform_o": "platforms:string[]",
-        "duration_observed_o": "duration_observed_o:string",
+        "platform_o": "platforms:text[]",
+        "duration_observed_o": "duration_observed_o:text",
         "people_o": "people_o:content",
         "notes_o": "notes_o:content",
         "quotations_o": "quotations_o:content",
-        "media_o": "media_o:string[]",
+        "media_o": "media_o:text[]",
         "extra_o": "extra_o:content",
         # ???
         "related_files_i_o_me": None,
@@ -228,9 +228,9 @@ if __name__ == "__main__":
                 {
                     "id": filepath,
                     "label": filepath.split(".")[0],
-                    "filepath": f"./images/{filepath}",
+                    "filepath": f"images/{filepath}",
                     "type": "image",
                 }
                 for filepath in medias
-                if os.path.isfile(f"./images/{filepath}")
+                if os.path.isfile(f"images/{filepath}")
             )
